@@ -1,0 +1,146 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // ==================== Helper Functions ====================
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user is admin
+    // ⚠️ IMPORTANT: Replace with your actual admin email(s)
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email in [
+               'ridamchhapiya5@gmail.com',
+               // Add more admin emails here:
+               // 'another-admin@example.com',
+             ];
+    }
+    
+    // Check if file is an image
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+    
+    // Check if file is a PDF
+    function isPDF() {
+      return request.resource.contentType == 'application/pdf';
+    }
+    
+    // Check file size (max 10MB for images, 5MB for PDFs)
+    function isValidSize() {
+      return request.resource.size < 10 * 1024 * 1024;
+    }
+    
+    // ==================== Resumes ====================
+    
+    match /resumes/{fileName} {
+      // Anyone can read/download resumes
+      allow read: if true;
+      
+      // Only admins can upload resumes
+      allow create: if isAdmin() && isPDF() && isValidSize();
+      
+      // Only admins can update/delete resumes
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== Profile Photos ====================
+    
+    match /profile/{fileName} {
+      // Anyone can view profile photos
+      allow read: if true;
+      
+      // Only admins can upload profile photos
+      allow create: if isAdmin() && isImage() && isValidSize();
+      
+      // Only admins can update/delete profile photos
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== Project Images ====================
+    
+    match /projects/{fileName} {
+      // Anyone can view project images
+      allow read: if true;
+      
+      // Only admins can upload project images
+      allow create: if isAdmin() && isImage() && isValidSize();
+      
+      // Only admins can update/delete project images
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== Company Logos ====================
+    
+    match /companies/{fileName} {
+      // Anyone can view company logos
+      allow read: if true;
+      
+      // Only admins can upload logos
+      allow create: if isAdmin() && isImage() && isValidSize();
+      
+      // Only admins can update/delete logos
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== Certification Images ====================
+    
+    match /certifications/{fileName} {
+      // Anyone can view certification images
+      allow read: if true;
+      
+      // Only admins can upload certification images
+      allow create: if isAdmin() && isImage() && isValidSize();
+      
+      // Only admins can update/delete certification images
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== Certification Badges ====================
+    
+    match /certification_badges/{userId}/{fileName} {
+      // Anyone can view certification badges
+      allow read: if true;
+      
+      // Only admins can upload certification badges
+      allow create: if isAdmin() && isImage() && isValidSize();
+      
+      // Only admins can update/delete certification badges
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== Skill Icons (Future Use) ====================
+    
+    match /skills/{fileName} {
+      // Anyone can view skill icons
+      allow read: if true;
+      
+      // Only admins can upload skill icons
+      allow create: if isAdmin() && isImage() && isValidSize();
+      
+      // Only admins can update/delete skill icons
+      allow update, delete: if isAdmin();
+    }
+    
+    // ==================== Temporary Uploads ====================
+    
+    match /temp/{userId}/{fileName} {
+      // Only authenticated users can access their temp files
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // ==================== Default Deny ====================
+    
+    // Deny access to all other paths by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+

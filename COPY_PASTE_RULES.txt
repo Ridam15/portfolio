@@ -1,0 +1,165 @@
+===============================================
+COPY THESE RULES TO FIREBASE CONSOLE
+===============================================
+
+⚠️ REMEMBER TO CHANGE THE EMAIL TO YOURS!
+
+===============================================
+FIRESTORE RULES (Step 1 of 2)
+===============================================
+
+Go to: Firebase Console → Firestore Database → Rules
+Copy everything below this line:
+
+---START COPY HERE---
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email in [
+               'ridamchhapiya5@gmail.com',
+             ];
+    }
+    
+    match /portfolio_content/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /portfolio/{section} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /experiences/{experienceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /skill_categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /certifications/{certId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /contact_submissions/{submissionId} {
+      allow read: if isAdmin();
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+    
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+---END COPY---
+
+⚠️ CHANGE 'ridamchhapiya5@gmail.com' TO YOUR EMAIL!
+Then click PUBLISH button!
+
+===============================================
+STORAGE RULES (Step 2 of 2)
+===============================================
+
+Go to: Firebase Console → Storage → Rules
+Copy everything below this line:
+
+---START COPY HERE---
+
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email in [
+               'ridamchhapiya5@gmail.com',
+             ];
+    }
+    
+    match /resumes/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /profile/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /projects/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /companies/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /certifications/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /certification_badges/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+---END COPY---
+
+⚠️ CHANGE THE EMAIL AGAIN!
+Then click PUBLISH button!
+
+===============================================
+CHECKLIST
+===============================================
+
+[ ] Copied Firestore rules
+[ ] Changed email to mine
+[ ] Clicked PUBLISH in Firestore Rules
+[ ] Copied Storage rules  
+[ ] Changed email to mine
+[ ] Clicked PUBLISH in Storage Rules
+[ ] Refreshed browser (Cmd+Shift+R or Ctrl+Shift+R)
+[ ] Tested - no more errors!
+
+===============================================
+
+
