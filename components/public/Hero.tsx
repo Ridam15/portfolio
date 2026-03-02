@@ -336,37 +336,52 @@ export default function Hero({ useParticles = true, className }: HeroProps) {
             variants={itemVariants}
             className="flex flex-wrap gap-4 justify-center mb-12"
           >
-            {/* View Projects Button */}
-            <motion.a
-              href="#projects"
-              onClick={(e) => {
-                e.preventDefault();
-                document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="relative z-10 flex items-center gap-2">
-                View Projects
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </motion.a>
+            {heroData.ctaButtons?.map((btn, index) => {
+              if (btn.variant === 'primary') {
+                return (
+                  <motion.a
+                    key={index}
+                    href={btn.url}
+                    onClick={(e) => {
+                      if (btn.url.startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(btn.url);
+                        if (target) {
+                          target.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }
+                    }}
+                    className="group relative px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg font-semibold text-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/50"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span className="relative z-10 flex items-center gap-2">
+                      {btn.text}
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </motion.a>
+                );
+              }
 
-            {/* Download Resume Button */}
-            <motion.a
-              href={heroData.ctaButtons?.[1]?.url || '/resume.pdf'}
-              download
-              className="group relative px-8 py-4 bg-gray-800/50 backdrop-blur-sm border-2 border-cyan-500/30 rounded-lg font-semibold text-white hover:bg-gray-800/80 hover:border-cyan-500/60 transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <span className="flex items-center gap-2">
-                <Download className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
-                {heroData.ctaButtons?.[1]?.text || 'Download Resume'}
-              </span>
-            </motion.a>
+              return (
+                <motion.a
+                  key={index}
+                  href={btn.url}
+                  download={btn.url.includes('.pdf') || btn.text.toLowerCase().includes('download')}
+                  className="group relative px-8 py-4 bg-gray-800/50 backdrop-blur-sm border-2 border-cyan-500/30 rounded-lg font-semibold text-white hover:bg-gray-800/80 hover:border-cyan-500/60 transition-all duration-300"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="flex items-center gap-2">
+                    {(btn.url.includes('.pdf') || btn.text.toLowerCase().includes('download')) ? (
+                      <Download className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                    ) : null}
+                    {btn.text}
+                  </span>
+                </motion.a>
+              );
+            })}
           </motion.div>
 
           {/* Social Links */}
