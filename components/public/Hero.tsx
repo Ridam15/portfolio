@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePortfolioData } from '@/lib/hooks/useFirestore';
-import { ChevronDown, Github, Linkedin, Mail, MapPin, Download, ArrowRight } from 'lucide-react';
+import { ChevronDown, Github, Linkedin, Mail, MapPin, Download, ArrowRight, Link as LinkIcon, Globe, Twitter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import dynamic from 'next/dynamic';
 
@@ -23,8 +23,9 @@ const AnimatedGradient = dynamic(
 interface SocialLink {
   name: string;
   url: string;
-  icon: typeof Github;
-  label: string;
+  icon?: typeof Github;
+  label?: string;
+  platform?: string;
 }
 
 interface HeroProps {
@@ -62,6 +63,16 @@ const DEFAULT_SOCIAL_LINKS: SocialLink[] = [
     label: 'Send me an email',
   },
 ];
+
+const platformIconMap: Record<string, typeof Github> = {
+  github: Github,
+  linkedin: Linkedin,
+  email: Mail,
+  twitter: Twitter,
+  x: Twitter,
+  website: Globe,
+  default: LinkIcon,
+};
 
 // ==================== Animation Variants ====================
 
@@ -389,15 +400,21 @@ export default function Hero({ useParticles = true, className }: HeroProps) {
             variants={itemVariants}
             className="flex gap-6 justify-center mb-16"
           >
-            {DEFAULT_SOCIAL_LINKS.map((social, index) => {
-              const Icon = social.icon;
+            {heroData.socialLinks?.map((social, index) => {
+              const platform = social.platform?.toLowerCase() || '';
+              const Icon = platformIconMap[platform] || platformIconMap.default;
+
+              // Fallback for label and name if not provided in CMS
+              const platformName = social.platform ? social.platform.charAt(0).toUpperCase() + social.platform.slice(1) : 'Link';
+              const label = `Visit my ${platformName}`;
+
               return (
                 <motion.a
-                  key={social.name}
+                  key={index}
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={social.label}
+                  aria-label={label}
                   custom={index}
                   variants={socialVariants}
                   className="group relative w-14 h-14 flex items-center justify-center rounded-full bg-gray-800/50 backdrop-blur-sm border border-cyan-500/20 hover:border-cyan-500/60 transition-all duration-300"
