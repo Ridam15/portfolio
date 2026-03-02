@@ -225,6 +225,8 @@ export interface PortfolioMetadata {
   seo?: {
     keywords: string[];
     author: string;
+    twitterHandle?: string;
+    googleVerification?: string;
   };
 }
 

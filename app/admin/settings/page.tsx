@@ -107,8 +107,8 @@ export default function SiteSettingsPage() {
         keywords: data.metadata.seo?.keywords?.join(', ') || '',
         author: data.metadata.seo?.author || '',
         googleAnalyticsId: data.metadata.analytics?.googleAnalyticsId || '',
-        googleVerification: '', // Not stored, just for reference
-        twitterHandle: '', // Not stored in metadata yet
+        googleVerification: data.metadata.seo?.googleVerification || '',
+        twitterHandle: data.metadata.seo?.twitterHandle || '',
       });
     }
   }, [data, reset]);
@@ -126,6 +126,8 @@ export default function SiteSettingsPage() {
         seo: {
           keywords: formData.keywords ? formData.keywords.split(',').map((k) => k.trim()) : [],
           author: formData.author || '',
+          twitterHandle: formData.twitterHandle || '',
+          googleVerification: formData.googleVerification || '',
         },
         analytics: {
           googleAnalyticsId: formData.googleAnalyticsId || '',
@@ -158,8 +160,8 @@ export default function SiteSettingsPage() {
           keywords: data.metadata.seo?.keywords?.join(', ') || '',
           author: data.metadata.seo?.author || '',
           googleAnalyticsId: data.metadata.analytics?.googleAnalyticsId || '',
-          googleVerification: '',
-          twitterHandle: '',
+          googleVerification: data.metadata.seo?.googleVerification || '',
+          twitterHandle: data.metadata.seo?.twitterHandle || '',
         });
       }
       toast.info('Changes discarded');

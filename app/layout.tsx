@@ -4,6 +4,8 @@ import { Toaster } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import { getDocument } from '@/lib/firebase/firestore';
+import { PortfolioMetadata } from '@/types/portfolio';
 import './globals.css';
 
 /**
@@ -29,80 +31,92 @@ export const viewport: Viewport = {
 };
 
 /**
- * Site metadata for SEO
+ * Dynamically generate site metadata for SEO from Firestore
  */
-export const metadata: Metadata = {
-  title: 'Ridam Chhapiya | Software Engineer',
-  description:
-    'Software Engineer specializing in full-stack development, cloud-native architectures, and Generative AI integration',
-  keywords: [
-    'Ridam Chhapiya',
-    'Software Engineer',
-    'Full Stack Developer',
-    'Cloud Native',
-    'Generative AI',
-    'React',
-    'Next.js',
-    'TypeScript',
-    'Node.js',
-    'Firebase',
-    'Web Development',
-    'Portfolio',
-  ],
-  authors: [{ name: 'Ridam Chhapiya', url: 'https://ridamchhapiya.com' }],
-  creator: 'Ridam Chhapiya',
-  publisher: 'Ridam Chhapiya',
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL('https://ridamchhapiya.com'),
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://ridamchhapiya.com',
-    title: 'Ridam Chhapiya | Software Engineer',
-    description:
-      'Software Engineer specializing in full-stack development, cloud-native architectures, and Generative AI integration',
-    siteName: 'Ridam Chhapiya Portfolio',
-    images: [
-      {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Ridam Chhapiya - Software Engineer',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Ridam Chhapiya | Software Engineer',
-    description:
-      'Software Engineer specializing in full-stack development, cloud-native architectures, and Generative AI integration',
-    images: ['/twitter-image.jpg'],
-    creator: '@ridamchhapiya',
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+export async function generateMetadata(): Promise<Metadata> {
+  let meta: PortfolioMetadata | null = null;
+
+  try {
+    // Attempt to fetch dynamic metadata from Firestore
+    // Note: We use the server-side firestore admin or direct client here since it's a Server Component
+    // Wait, getDocument uses the client SDK which might cause issues in a Server Component without init.
+    // However, getDocument from '@/lib/firebase/firestore' imports from '@/lib/firebase/config' which initializes the client app.
+    // For a generic static/SSR build, this works with Next.js polyfills, but it's best to handle fallbacks gracefully.
+    meta = await getDocument<PortfolioMetadata>('portfolio_content', 'metadata');
+  } catch (error) {
+    console.warn('Failed to fetch dynamic metadata, falling back to defaults:', error);
+  }
+
+  const title = meta?.siteTitle || 'Ridam Chhapiya | Software Engineer';
+  const description = meta?.siteDescription || 'Software Engineer specializing in full-stack development, cloud-native architectures, and Generative AI integration';
+  const keywords = meta?.seo?.keywords?.length ? meta.seo.keywords : [
+    'Ridam Chhapiya', 'Software Engineer', 'Full Stack Developer',
+    'Cloud Native', 'Generative AI', 'React', 'Next.js', 'Typescript'
+  ];
+  const authorName = meta?.seo?.author || 'Ridam Chhapiya';
+  const siteUrl = meta?.siteUrl || 'https://ridamchhapiya.com';
+  const ogImageUrl = meta?.ogImage || '/og-image.jpg';
+  const twitterHandle = meta?.seo?.twitterHandle || '@ridamchhapiya';
+
+  // Set up verification objects dynamically. Only add google if the string exists.
+  const verification: any = {};
+  if (meta?.seo?.googleVerification) {
+    verification.google = meta.seo.googleVerification;
+  }
+
+  return {
+    title,
+    description,
+    keywords,
+    authors: [{ name: authorName, url: siteUrl }],
+    creator: authorName,
+    publisher: authorName,
+    formatDetection: {
+      email: false,
+      address: false,
+      telephone: false,
+    },
+    metadataBase: new URL('https://portfolio-ten-silk-50.vercel.app'), // Use the vercel URL as physical base to prevent localhost errors in build
+    alternates: {
+      canonical: '/',
+    },
+    openGraph: {
+      type: 'website',
+      locale: 'en_US',
+      url: siteUrl,
+      title,
+      description,
+      siteName: title,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `${authorName} - Software Engineer`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImageUrl],
+      creator: twitterHandle,
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
-  },
-  verification: {
-    google: 'your-google-verification-code',
-    // yandex: 'your-yandex-verification-code',
-    // other: 'your-other-verification-code',
-  },
-};
+    ...(Object.keys(verification).length > 0 && { verification }),
+  };
+}
 
 /**
  * Props for RootLayout component
