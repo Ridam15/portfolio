@@ -139,18 +139,18 @@ function CategoryModal({ isOpen, onClose, category, onSave, maxOrder }: Category
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <Layers className="w-6 h-6 text-indigo-400" />
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {category ? 'Edit Category' : 'Add New Category'}
                 </h2>
               </div>
-              <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-800 transition-colors">
-                <X className="w-5 h-5 text-gray-400" />
+              <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Category Name <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -158,9 +158,9 @@ function CategoryModal({ isOpen, onClose, category, onSave, maxOrder }: Category
                   type="text"
                   placeholder="e.g., Full-Stack Development"
                   className={cn(
-                    'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-500',
+                    'w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500',
                     'focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300',
-                    errors.name ? 'border-red-500' : 'border-gray-700'
+                    errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
                   )}
                 />
                 {errors.name && (
@@ -172,38 +172,38 @@ function CategoryModal({ isOpen, onClose, category, onSave, maxOrder }: Category
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Description
                 </label>
                 <input
                   {...register('description')}
                   type="text"
                   placeholder="Brief description"
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Icon Name (Lucide)
                 </label>
                 <input
                   {...register('icon')}
                   type="text"
                   placeholder="e.g., Code2, Cloud, Database"
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Display Order
                 </label>
                 <input
                   {...register('order', { valueAsNumber: true })}
                   type="number"
                   min="0"
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all duration-300"
                 />
               </div>
 
@@ -234,7 +234,7 @@ function CategoryModal({ isOpen, onClose, category, onSave, maxOrder }: Category
                   type="button"
                   onClick={onClose}
                   disabled={isSaving}
-                  className="px-6 py-3 rounded-lg font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                  className="px-6 py-3 rounded-lg font-semibold border border-gray-300 dark:border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -334,18 +334,18 @@ function SkillModal({ isOpen, onClose, skill, categoryId, categoryName, onSave }
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <Code2 className="w-6 h-6 text-cyan-400" />
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {skill ? 'Edit Skill' : 'Add New Skill'}
                 </h2>
               </div>
-              <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-800 transition-colors">
-                <X className="w-5 h-5 text-gray-400" />
+              <button onClick={onClose} className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Skill Name <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -353,9 +353,9 @@ function SkillModal({ isOpen, onClose, skill, categoryId, categoryName, onSave }
                   type="text"
                   placeholder="e.g., React, Node.js, AWS"
                   className={cn(
-                    'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-500',
+                    'w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500',
                     'focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300',
-                    errors.name ? 'border-red-500' : 'border-gray-700'
+                    errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
                   )}
                 />
                 {errors.name && (
@@ -367,7 +367,7 @@ function SkillModal({ isOpen, onClose, skill, categoryId, categoryName, onSave }
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Proficiency: {proficiencyValue}% <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -392,7 +392,7 @@ function SkillModal({ isOpen, onClose, skill, categoryId, categoryName, onSave }
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Years of Experience
                 </label>
                 <input
@@ -401,19 +401,19 @@ function SkillModal({ isOpen, onClose, skill, categoryId, categoryName, onSave }
                   min="0"
                   step="0.5"
                   placeholder="e.g., 3"
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Icon/Emoji
                 </label>
                 <input
                   {...register('icon')}
                   type="text"
                   placeholder="e.g., ⚛️, 🟢, 🐍"
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300"
                 />
               </div>
 
@@ -444,7 +444,7 @@ function SkillModal({ isOpen, onClose, skill, categoryId, categoryName, onSave }
                   type="button"
                   onClick={onClose}
                   disabled={isSaving}
-                  className="px-6 py-3 rounded-lg font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                  className="px-6 py-3 rounded-lg font-semibold border border-gray-300 dark:border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -491,9 +491,9 @@ function ConfirmDialog({ isOpen, onClose, onConfirm, title, message }: ConfirmDi
               <div className="p-3 rounded-full bg-red-600/20">
                 <AlertCircle className="w-6 h-6 text-red-400" />
               </div>
-              <h3 className="text-xl font-bold text-white">{title}</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">{title}</h3>
             </div>
-            <p className="text-gray-300 mb-6">{message}</p>
+            <p className="text-gray-700 dark:text-gray-300 mb-6">{message}</p>
             <div className="flex gap-3">
               <button
                 onClick={onConfirm}
@@ -503,7 +503,7 @@ function ConfirmDialog({ isOpen, onClose, onConfirm, title, message }: ConfirmDi
               </button>
               <button
                 onClick={onClose}
-                className="flex-1 px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors font-semibold"
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-semibold"
               >
                 Cancel
               </button>
@@ -521,14 +521,14 @@ export default function SkillsEditor() {
   const { data, loading: dataLoading, refetch } = usePortfolioData();
   const [categories, setCategories] = useState<SkillCategory[]>([]);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
-  
+
   // Modal states
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [isSkillModalOpen, setIsSkillModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<SkillCategory | null>(null);
   const [editingSkill, setEditingSkill] = useState<{ skill: Skill; categoryId: string } | null>(null);
   const [selectedCategoryForSkill, setSelectedCategoryForSkill] = useState<{ id: string; name: string } | null>(null);
-  
+
   // Delete confirmations
   const [deleteCategoryConfirm, setDeleteCategoryConfirm] = useState<{ isOpen: boolean; category: SkillCategory | null }>({
     isOpen: false,
@@ -735,7 +735,7 @@ export default function SkillsEditor() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 text-indigo-500 animate-spin" />
-          <p className="text-gray-400 text-sm">Loading skills...</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">Loading skills...</p>
         </div>
       </div>
     );
@@ -754,24 +754,22 @@ export default function SkillsEditor() {
             <div className="flex items-center gap-3">
               <Award className="w-8 h-8 text-indigo-400" />
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
                   Manage Skills
                 </h1>
-                <p className="text-gray-400 text-sm md:text-base mt-1">
+                <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base mt-1">
                   Organize your skills by categories. You have {categories.length} {categories.length === 1 ? 'category' : 'categories'}.
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/admin">
-                <Button variant="outline" className="border-gray-700 flex items-center gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Dashboard
-                </Button>
+              <Link href="/admin" className="btn-back-dashboard">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Dashboard
               </Link>
               <button
                 onClick={handleAddCategory}
-                className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 flex items-center gap-2 font-semibold"
+                className="admin-btn px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300 flex items-center gap-2 font-semibold"
               >
                 <Plus className="w-5 h-5" />
                 Add Category
@@ -788,7 +786,7 @@ export default function SkillsEditor() {
           >
             <GlassCard variant="subtle" className="p-12 text-center">
               <Award className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-400 mb-2">
+              <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
                 No Skill Categories Yet
               </h3>
               <p className="text-gray-500 mb-6">
@@ -807,7 +805,7 @@ export default function SkillsEditor() {
           <div className="space-y-4">
             {categories.map((category, index) => {
               const isExpanded = expandedCategories.has(category.id);
-              
+
               return (
                 <motion.div
                   key={category.id}
@@ -821,24 +819,24 @@ export default function SkillsEditor() {
                       <div className="flex items-center gap-3 flex-1">
                         <button
                           onClick={() => toggleCategory(category.id)}
-                          className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                          className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
                         >
                           <motion.div
                             animate={{ rotate: isExpanded ? 90 : 0 }}
                             transition={{ duration: 0.2 }}
                           >
-                            <ChevronRight className="w-5 h-5 text-gray-400" />
+                            <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                           </motion.div>
                         </button>
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-bold text-white">{category.name}</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">{category.name}</h3>
                             <span className="px-2 py-1 bg-indigo-600/20 text-indigo-300 text-xs rounded-full">
                               {category.skills.length} {category.skills.length === 1 ? 'skill' : 'skills'}
                             </span>
                           </div>
                           {category.description && (
-                            <p className="text-sm text-gray-400 mt-1">{category.description}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{category.description}</p>
                           )}
                         </div>
                       </div>
@@ -887,21 +885,21 @@ export default function SkillsEditor() {
                                   initial={{ opacity: 0, x: -20 }}
                                   animate={{ opacity: 1, x: 0 }}
                                   transition={{ delay: skillIndex * 0.05 }}
-                                  className="flex items-center gap-3 p-3 rounded-lg bg-gray-800/30 hover:bg-gray-800/50 transition-colors group"
+                                  className="flex items-center gap-3 p-3 rounded-lg bg-gray-800/30 hover:bg-gray-50 dark:bg-gray-800/50 transition-colors group"
                                 >
                                   {/* Reorder buttons */}
                                   <div className="flex flex-col gap-1">
                                     <button
                                       onClick={() => handleMoveSkillUp(category.id, skillIndex)}
                                       disabled={skillIndex === 0}
-                                      className="p-1 text-gray-500 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                      className="p-1 text-gray-500 hover:text-gray-900 dark:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                     >
                                       <ChevronUp className="w-4 h-4" />
                                     </button>
                                     <button
                                       onClick={() => handleMoveSkillDown(category.id, skillIndex)}
                                       disabled={skillIndex === category.skills.length - 1}
-                                      className="p-1 text-gray-500 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                      className="p-1 text-gray-500 hover:text-gray-900 dark:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                     >
                                       <ChevronDown className="w-4 h-4" />
                                     </button>
@@ -915,7 +913,7 @@ export default function SkillsEditor() {
                                   {/* Skill Info */}
                                   <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                      <span className="font-semibold text-white">{skill.name}</span>
+                                      <span className="font-semibold text-gray-900 dark:text-white">{skill.name}</span>
                                       {skill.yearsOfExperience && (
                                         <span className="text-xs text-gray-500">
                                           {skill.yearsOfExperience} {skill.yearsOfExperience === 1 ? 'year' : 'years'}
@@ -932,13 +930,13 @@ export default function SkillsEditor() {
                                           className={cn(
                                             'h-full rounded-full',
                                             skill.proficiency >= 90 ? 'bg-green-500' :
-                                            skill.proficiency >= 70 ? 'bg-cyan-500' :
-                                            skill.proficiency >= 50 ? 'bg-blue-500' :
-                                            'bg-gray-500'
+                                              skill.proficiency >= 70 ? 'bg-cyan-500' :
+                                                skill.proficiency >= 50 ? 'bg-blue-500' :
+                                                  'bg-gray-500'
                                           )}
                                         />
                                       </div>
-                                      <span className="text-sm font-medium text-gray-400 w-12 text-right">
+                                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400 w-12 text-right">
                                         {skill.proficiency}%
                                       </span>
                                     </div>

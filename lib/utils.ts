@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -35,13 +36,13 @@ export function formatDate(
   options?: Intl.DateTimeFormatOptions
 ): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
+
   const defaultOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   };
-  
+
   return new Intl.DateTimeFormat('en-US', options || defaultOptions).format(dateObj);
 }
 
@@ -170,7 +171,7 @@ export function titleCase(text: string): string {
  */
 export function generateId(prefix?: string): string {
   let id: string;
-  
+
   // Use crypto.randomUUID if available (modern browsers and Node 16.7+)
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
     id = crypto.randomUUID();
@@ -182,7 +183,7 @@ export function generateId(prefix?: string): string {
       return v.toString(16);
     });
   }
-  
+
   return prefix ? `${prefix}-${id}` : id;
 }
 
@@ -199,11 +200,11 @@ export function generateId(prefix?: string): string {
 export function generateShortId(length: number = 10): string {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
-  
+
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  
+
   return result;
 }
 
@@ -228,12 +229,12 @@ export function debounce<T extends (...args: any[]) => any>(
   delay: number = 300
 ): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout | null = null;
-  
+
   return function debounced(...args: Parameters<T>) {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
-    
+
     timeoutId = setTimeout(() => {
       func(...args);
       timeoutId = null;
@@ -258,7 +259,7 @@ export function throttle<T extends (...args: any[]) => any>(
   limit: number
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean = false;
-  
+
   return function throttled(...args: Parameters<T>) {
     if (!inThrottle) {
       func(...args);
@@ -280,7 +281,7 @@ type AsyncFunction<T = any> = (...args: any[]) => Promise<T>;
 /**
  * Result type for error handling wrapper
  */
-type Result<T, E = Error> = 
+type Result<T, E = Error> =
   | { success: true; data: T; error: null }
   | { success: false; data: null; error: E };
 

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useMemo } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useMemo } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
   ExternalLink,
   Github,
@@ -11,13 +11,14 @@ import {
   Sparkles,
   Filter,
   Layers,
-  Check
-} from 'lucide-react';
-import Image from 'next/image';
-import { cn } from '@/lib/utils';
-import GlassCard, { GlassCardContent } from '@/components/effects/GlassCard';
-import { useProjects } from '@/lib/hooks/useProjects';
-import type { Project as ProjectType } from '@/types/portfolio';
+  Check,
+} from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import GlassCard, { GlassCardContent } from "@/components/effects/GlassCard";
+import { useProjects } from "@/lib/hooks/useProjects";
+import { TechnologyDropdown } from "@/components/TechnologyDropdown";
+import type { Project as ProjectType } from "@/types/portfolio";
 
 // ==================== Types ====================
 
@@ -27,7 +28,7 @@ interface ProjectsProps {
 
 interface ProjectCardProps {
   project: ProjectType;
-  size: 'small' | 'medium' | 'large';
+  size: "small" | "medium" | "large";
   onClick: () => void;
 }
 
@@ -132,58 +133,66 @@ const getAllTechnologies = (projects: ProjectType[]): string[] => {
 /**
  * Get grid size class based on card size
  */
-const getGridSizeClass = (size: 'small' | 'medium' | 'large'): string => {
+const getGridSizeClass = (size: "small" | "medium" | "large"): string => {
   switch (size) {
-    case 'large':
-      return 'md:col-span-2 md:row-span-2';
-    case 'medium':
-      return 'md:col-span-2';
-    case 'small':
+    case "large":
+      return "md:col-span-2 lg:col-span-2";
+    case "medium":
+    case "small":
     default:
-      return 'md:col-span-1';
+      return "md:col-span-1 lg:col-span-1";
   }
 };
 
 /**
  * Determine card size based on project properties
  */
-const getCardSize = (project: ProjectType, index: number): 'small' | 'medium' | 'large' => {
-  // Featured projects are large
-  if (project.featured) return 'large';
-
-  // Every 3rd project is medium
-  if (index % 3 === 0) return 'medium';
-
-  // Default is small
-  return 'small';
+const getCardSize = (
+  project: ProjectType,
+  index: number,
+): "small" | "medium" | "large" => {
+  // A highly optimized repeating bento pattern that seamlessly fills a 2 or 3 column grid
+  const bentoPattern = ["large", "small", "small", "small", "small", "large"];
+  return bentoPattern[index % bentoPattern.length] as
+    | "small"
+    | "medium"
+    | "large";
 };
 
 // ==================== Tech Badge Component ====================
 
-const TechBadge = ({ tech, variant = 'default' }: { tech: string; variant?: 'default' | 'colored' }) => {
+const TechBadge = ({
+  tech,
+  variant = "default",
+}: {
+  tech: string;
+  variant?: "default" | "colored";
+}) => {
   // Color mapping for common technologies
   const techColors: Record<string, string> = {
-    'React': 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
-    'Next.js': 'bg-white/10 text-white border-white/30',
-    'TypeScript': 'bg-blue-500/10 text-blue-300 border-blue-500/30',
-    'Node.js': 'bg-green-500/10 text-green-300 border-green-500/30',
-    'Python': 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30',
-    'Firebase': 'bg-orange-500/10 text-orange-300 border-orange-500/30',
-    'AWS': 'bg-orange-500/10 text-orange-300 border-orange-500/30',
-    'Docker': 'bg-blue-500/10 text-blue-300 border-blue-500/30',
-    'MongoDB': 'bg-green-500/10 text-green-300 border-green-500/30',
-    'PostgreSQL': 'bg-blue-500/10 text-blue-300 border-blue-500/30',
+    React: "bg-cyan-500/10 text-cyan-300 border-cyan-500/30",
+    "Next.js": "bg-white/10 text-white border-white/30",
+    TypeScript: "bg-blue-500/10 text-blue-300 border-blue-500/30",
+    "Node.js": "bg-green-500/10 text-green-300 border-green-500/30",
+    Python: "bg-yellow-500/10 text-yellow-300 border-yellow-500/30",
+    Firebase: "bg-orange-500/10 text-orange-300 border-orange-500/30",
+    AWS: "bg-orange-500/10 text-orange-300 border-orange-500/30",
+    Docker: "bg-blue-500/10 text-blue-300 border-blue-500/30",
+    MongoDB: "bg-green-500/10 text-green-300 border-green-500/30",
+    PostgreSQL: "bg-blue-500/10 text-blue-300 border-blue-500/30",
   };
 
-  const colorClass = variant === 'colored'
-    ? (techColors[tech] || 'bg-purple-500/10 text-purple-300 border-purple-500/30')
-    : 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30';
+  const colorClass =
+    variant === "colored"
+      ? techColors[tech] ||
+        "bg-purple-500/10 text-purple-300 border-purple-500/30"
+      : "bg-cyan-500/10 text-cyan-300 border-cyan-500/30";
 
   return (
     <motion.span
       className={cn(
-        'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-all duration-200',
-        colorClass
+        "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-all duration-200",
+        colorClass,
       )}
       whileHover={{ scale: 1.05, y: -2 }}
       whileTap={{ scale: 0.95 }}
@@ -201,7 +210,16 @@ const ProjectCard = ({ project, size, onClick }: ProjectCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(cardRef, { once: true, amount: 0.2 });
 
-  const { title, description, techStack, links, thumbnail, media, featured, status } = project;
+  const {
+    title,
+    description,
+    techStack,
+    links,
+    thumbnail,
+    media,
+    featured,
+    status,
+  } = project;
   const imageUrl = thumbnail || media[0]?.url;
 
   return (
@@ -209,17 +227,14 @@ const ProjectCard = ({ project, size, onClick }: ProjectCardProps) => {
       ref={cardRef}
       variants={cardVariants}
       initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
-      className={cn(
-        'group cursor-pointer',
-        getGridSizeClass(size)
-      )}
+      animate={isInView ? "visible" : "hidden"}
+      className={cn("group cursor-pointer", getGridSizeClass(size))}
       onClick={onClick}
     >
       <GlassCard
         className={cn(
-          'h-full overflow-hidden hover:border-cyan-500/40 transition-all duration-300',
-          featured && 'ring-2 ring-cyan-500/20'
+          "h-full overflow-hidden hover:border-cyan-500/40 transition-all duration-300",
+          featured && "ring-2 ring-cyan-500/20",
         )}
         enableHover={false}
         padding="none"
@@ -227,10 +242,12 @@ const ProjectCard = ({ project, size, onClick }: ProjectCardProps) => {
         <div className="relative h-full flex flex-col">
           {/* Image/Video Preview */}
           {imageUrl && (
-            <div className={cn(
-              'relative overflow-hidden bg-gray-800',
-              size === 'large' ? 'h-64 md:h-80' : size === 'medium' ? 'h-48 md:h-56' : 'h-40 md:h-48'
-            )}>
+            <div
+              className={cn(
+                "relative overflow-hidden bg-gray-800",
+                size === "large" ? "h-56 md:h-72" : "h-48 md:h-56",
+              )}
+            >
               {!imageError ? (
                 <>
                   <Image
@@ -239,12 +256,12 @@ const ProjectCard = ({ project, size, onClick }: ProjectCardProps) => {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className={cn(
-                      'object-cover transition-all duration-500 group-hover:scale-110',
-                      imageLoaded ? 'opacity-100' : 'opacity-0'
+                      "object-cover transition-all duration-500 group-hover:scale-110",
+                      imageLoaded ? "opacity-100" : "opacity-0",
                     )}
                     onLoad={() => setImageLoaded(true)}
                     onError={() => setImageError(true)}
-                    loading={featured ? 'eager' : 'lazy'}
+                    loading={featured ? "eager" : "lazy"}
                     priority={featured}
                   />
                   {!imageLoaded && (
@@ -268,48 +285,64 @@ const ProjectCard = ({ project, size, onClick }: ProjectCardProps) => {
               )}
 
               {/* Status Badge */}
-              {status && status !== 'completed' && (
-                <div className={cn(
-                  'absolute top-4 left-4 px-3 py-1 backdrop-blur-sm border rounded-full text-xs font-semibold',
-                  status === 'in-progress' && 'bg-yellow-500/20 border-yellow-500/40 text-yellow-300',
-                  status === 'planned' && 'bg-purple-500/20 border-purple-500/40 text-purple-300'
-                )}>
-                  {status === 'in-progress' ? 'In Progress' : 'Planned'}
+              {status && status !== "completed" && (
+                <div
+                  className={cn(
+                    "absolute top-4 left-4 px-3 py-1 backdrop-blur-sm border rounded-full text-xs font-semibold",
+                    status === "in-progress" &&
+                      "bg-yellow-500/20 border-yellow-500/40 text-yellow-300",
+                    status === "planned" &&
+                      "bg-purple-500/20 border-purple-500/40 text-purple-300",
+                  )}
+                >
+                  {status === "in-progress" ? "In Progress" : "Planned"}
                 </div>
               )}
             </div>
           )}
 
           {/* Content */}
-          <GlassCardContent className={cn(
-            'flex-1 flex flex-col',
-            size === 'large' ? 'p-6' : 'p-4'
-          )}>
+          <GlassCardContent
+            className={cn(
+              "flex-1 flex flex-col",
+              size === "large" ? "p-6" : "p-4",
+            )}
+          >
             {/* Title */}
-            <h3 className={cn(
-              'font-bold text-white group-hover:text-cyan-400 transition-colors mb-2',
-              size === 'large' ? 'text-2xl md:text-3xl' : 'text-xl md:text-2xl'
-            )}>
+            <h3
+              className={cn(
+                "font-bold text-white group-hover:text-cyan-400 transition-colors mb-2",
+                size === "large"
+                  ? "text-2xl md:text-3xl"
+                  : "text-xl md:text-2xl",
+              )}
+            >
               {title}
             </h3>
 
             {/* Description */}
-            <p className={cn(
-              'text-gray-300 leading-relaxed flex-1',
-              size === 'large' ? 'text-base line-clamp-4' : 'text-sm line-clamp-3'
-            )}>
+            <p
+              className={cn(
+                "text-gray-300 leading-relaxed flex-1",
+                size === "large"
+                  ? "text-base line-clamp-4"
+                  : "text-sm line-clamp-4",
+              )}
+            >
               {description}
             </p>
 
             {/* Tech Stack */}
             {techStack && techStack.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
-                {techStack.slice(0, size === 'large' ? 6 : 4).map((tech, idx) => (
-                  <TechBadge key={idx} tech={tech} variant="colored" />
-                ))}
-                {techStack.length > (size === 'large' ? 6 : 4) && (
+                {techStack
+                  .slice(0, size === "large" ? 6 : 4)
+                  .map((tech, idx) => (
+                    <TechBadge key={idx} tech={tech} variant="colored" />
+                  ))}
+                {techStack.length > (size === "large" ? 6 : 4) && (
                   <span className="text-xs text-gray-500">
-                    +{techStack.length - (size === 'large' ? 6 : 4)} more
+                    +{techStack.length - (size === "large" ? 6 : 4)} more
                   </span>
                 )}
               </div>
@@ -366,7 +399,18 @@ const ProjectCard = ({ project, size, onClick }: ProjectCardProps) => {
 // ==================== Project Modal Component ====================
 
 const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
-  const { title, description, longDescription, techStack, features, links, media, status, role, teamSize } = project;
+  const {
+    title,
+    description,
+    longDescription,
+    techStack,
+    features,
+    links,
+    media,
+    status,
+    role,
+    teamSize,
+  } = project;
 
   return (
     <motion.div
@@ -416,13 +460,22 @@ const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
                   {title}
                 </h2>
                 {status && (
-                  <span className={cn(
-                    'px-3 py-1 rounded-full text-xs font-semibold border',
-                    status === 'completed' && 'bg-green-500/10 text-green-400 border-green-500/30',
-                    status === 'in-progress' && 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30',
-                    status === 'planned' && 'bg-purple-500/10 text-purple-400 border-purple-500/30'
-                  )}>
-                    {status === 'in-progress' ? 'In Progress' : status === 'planned' ? 'Planned' : 'Completed'}
+                  <span
+                    className={cn(
+                      "px-3 py-1 rounded-full text-xs font-semibold border",
+                      status === "completed" &&
+                        "bg-green-500/10 text-green-400 border-green-500/30",
+                      status === "in-progress" &&
+                        "bg-yellow-500/10 text-yellow-400 border-yellow-500/30",
+                      status === "planned" &&
+                        "bg-purple-500/10 text-purple-400 border-purple-500/30",
+                    )}
+                  >
+                    {status === "in-progress"
+                      ? "In Progress"
+                      : status === "planned"
+                        ? "Planned"
+                        : "Completed"}
                   </span>
                 )}
               </div>
@@ -480,7 +533,9 @@ const ProjectModal = ({ project, onClose }: ProjectModalProps) => {
             {/* Tech Stack */}
             {techStack && techStack.length > 0 && (
               <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-white">Technologies Used</h3>
+                <h3 className="text-lg font-semibold text-white">
+                  Technologies Used
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {techStack.map((tech, idx) => (
                     <TechBadge key={idx} tech={tech} variant="colored" />
@@ -538,7 +593,7 @@ const FilterButton = ({
   label,
   isActive,
   count,
-  onClick
+  onClick,
 }: {
   label: string;
   isActive: boolean;
@@ -549,20 +604,22 @@ const FilterButton = ({
     <motion.button
       onClick={onClick}
       className={cn(
-        'px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200',
+        "px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200",
         isActive
-          ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-lg shadow-cyan-500/20'
-          : 'bg-gray-800/50 text-gray-400 border-gray-700/50 hover:bg-gray-800 hover:text-gray-300 hover:border-gray-600'
+          ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-lg shadow-cyan-500/20"
+          : "bg-gray-800/50 text-gray-400 border-gray-700/50 hover:bg-gray-800 hover:text-gray-300 hover:border-gray-600",
       )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
       {label}
       {count !== undefined && (
-        <span className={cn(
-          'ml-1.5 text-xs',
-          isActive ? 'text-cyan-400' : 'text-gray-500'
-        )}>
+        <span
+          className={cn(
+            "ml-1.5 text-xs",
+            isActive ? "text-cyan-400" : "text-gray-500",
+          )}
+        >
           ({count})
         </span>
       )}
@@ -574,27 +631,31 @@ const FilterButton = ({
 
 const ProjectsSkeleton = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-fr">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:grid-flow-row-dense">
       {[1, 2, 3, 4, 5, 6].map((index) => (
         <div
           key={index}
           className={cn(
-            'opacity-50',
-            index === 1 && 'md:col-span-2 md:row-span-2',
-            index === 3 && 'md:col-span-2'
+            "opacity-50",
+            (index === 1 || index === 6) && "md:col-span-2 lg:col-span-2",
           )}
         >
           <GlassCard className="h-full" padding="none">
-            <div className={cn(
-              'bg-gray-800/30 animate-pulse',
-              index === 1 ? 'h-64 md:h-80' : index === 3 ? 'h-48 md:h-56' : 'h-40 md:h-48'
-            )} />
+            <div
+              className={cn(
+                "bg-gray-800/30 animate-pulse",
+                index === 1 || index === 6 ? "h-56 md:h-72" : "h-48 md:h-56",
+              )}
+            />
             <GlassCardContent className="p-4 space-y-3">
               <div className="h-7 bg-gray-700/30 rounded animate-pulse w-3/4" />
               <div className="h-16 bg-gray-700/30 rounded animate-pulse" />
               <div className="flex flex-wrap gap-2">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-6 w-20 bg-gray-700/30 rounded-full animate-pulse" />
+                  <div
+                    key={i}
+                    className="h-6 w-20 bg-gray-700/30 rounded-full animate-pulse"
+                  />
                 ))}
               </div>
             </GlassCardContent>
@@ -609,10 +670,10 @@ const ProjectsSkeleton = () => {
 
 const Projects = ({ className }: ProjectsProps) => {
   const { projects: fetchedProjects, loading, error } = useProjects();
-  const [selectedFilter, setSelectedFilter] = useState<string>('All');
-  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
+  const [selectedFilter, setSelectedFilter] = useState<string>("All");
+  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(
+    null,
+  );
 
   // Get projects and sort by order
   const projects = useMemo(() => {
@@ -631,13 +692,24 @@ const Projects = ({ className }: ProjectsProps) => {
   // Get all technologies for filters
   const technologies = useMemo(() => getAllTechnologies(projects), [projects]);
 
+  // Calculate project counts for each technology
+  const projectCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      All: projects.length,
+    };
+    technologies.forEach((tech) => {
+      counts[tech] = projects.filter((p) => p.techStack.includes(tech)).length;
+    });
+    return counts;
+  }, [projects, technologies]);
+
   // Filter projects by selected technology
   const filteredProjects = useMemo(() => {
-    if (selectedFilter === 'All') {
+    if (selectedFilter === "All") {
       return projects;
     }
     return projects.filter((project) =>
-      project.techStack.includes(selectedFilter)
+      project.techStack.includes(selectedFilter),
     );
   }, [projects, selectedFilter]);
 
@@ -646,14 +718,18 @@ const Projects = ({ className }: ProjectsProps) => {
     return (
       <section
         id="projects"
-        ref={sectionRef}
-        className={cn('relative py-16 md:py-24 lg:py-32 container mx-auto px-4', className)}
+        className={cn(
+          "relative py-16 md:py-24 lg:py-32 container mx-auto px-4",
+          className,
+        )}
       >
         <div className="text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Featured Projects
+            My Projects
           </h2>
-          <p className="text-red-400 mt-8">Failed to load projects. Please try again later.</p>
+          <p className="text-red-400 mt-8">
+            Failed to load projects. Please try again later.
+          </p>
         </div>
       </section>
     );
@@ -664,8 +740,10 @@ const Projects = ({ className }: ProjectsProps) => {
     return (
       <section
         id="projects"
-        ref={sectionRef}
-        className={cn('relative py-16 md:py-24 lg:py-32 container mx-auto px-4', className)}
+        className={cn(
+          "relative py-16 md:py-24 lg:py-32 container mx-auto px-4",
+          className,
+        )}
       >
         <motion.div
           initial="hidden"
@@ -683,7 +761,10 @@ const Projects = ({ className }: ProjectsProps) => {
           <div className="flex justify-center mb-12">
             <div className="flex flex-wrap gap-3 justify-center">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-9 w-24 bg-gray-700/30 rounded-full animate-pulse" />
+                <div
+                  key={i}
+                  className="h-9 w-24 bg-gray-700/30 rounded-full animate-pulse"
+                />
               ))}
             </div>
           </div>
@@ -700,8 +781,10 @@ const Projects = ({ className }: ProjectsProps) => {
     return (
       <section
         id="projects"
-        ref={sectionRef}
-        className={cn('relative py-16 md:py-24 lg:py-32 container mx-auto px-4', className)}
+        className={cn(
+          "relative py-16 md:py-24 lg:py-32 container mx-auto px-4",
+          className,
+        )}
       >
         <div className="text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -718,23 +801,27 @@ const Projects = ({ className }: ProjectsProps) => {
     <>
       <section
         id="projects"
-        ref={sectionRef}
-        className={cn('relative py-16 md:py-24 lg:py-32 container mx-auto px-4', className)}
+        className={cn(
+          "relative py-16 md:py-24 lg:py-32 container mx-auto px-4",
+          className,
+        )}
       >
         <motion.div
           initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
           variants={containerVariants}
           className="max-w-7xl mx-auto"
         >
           {/* Section Heading */}
           <motion.div variants={headingVariants} className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 relative inline-block">
-              Featured Projects
+              My Projects
               <motion.span
                 className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full"
                 initial={{ scaleX: 0 }}
-                animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.3 }}
                 style={{ originX: 0.5 }}
               />
@@ -744,30 +831,16 @@ const Projects = ({ className }: ProjectsProps) => {
             </p>
           </motion.div>
 
-          {/* Filter Buttons */}
+          {/* Technology Filter Dropdown */}
           {technologies.length > 0 && (
-            <motion.div
-              variants={filterVariants}
-              className="flex flex-wrap gap-3 justify-center mb-12"
-            >
-              <FilterButton
-                label="All"
-                isActive={selectedFilter === 'All'}
-                count={projects.length}
-                onClick={() => setSelectedFilter('All')}
+            <motion.div variants={filterVariants} className="mb-12">
+              <TechnologyDropdown
+                technologies={technologies}
+                selectedTech={selectedFilter}
+                onSelectTech={setSelectedFilter}
+                projectCounts={projectCounts}
+                maxVisible={5}
               />
-              {technologies.map((tech) => {
-                const count = projects.filter((p) => p.techStack.includes(tech)).length;
-                return (
-                  <FilterButton
-                    key={tech}
-                    label={tech}
-                    isActive={selectedFilter === tech}
-                    count={count}
-                    onClick={() => setSelectedFilter(tech)}
-                  />
-                );
-              })}
             </motion.div>
           )}
 
@@ -779,7 +852,7 @@ const Projects = ({ className }: ProjectsProps) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-fr"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:grid-flow-row-dense w-full"
             >
               {filteredProjects.length > 0 ? (
                 filteredProjects.map((project, index) => (
@@ -794,10 +867,13 @@ const Projects = ({ className }: ProjectsProps) => {
                 <div className="col-span-full text-center py-12">
                   <Filter className="w-12 h-12 text-gray-600 mx-auto mb-4" />
                   <p className="text-gray-400">
-                    No projects found with <span className="text-cyan-400 font-semibold">{selectedFilter}</span>
+                    No projects found with{" "}
+                    <span className="text-cyan-400 font-semibold">
+                      {selectedFilter}
+                    </span>
                   </p>
                   <button
-                    onClick={() => setSelectedFilter('All')}
+                    onClick={() => setSelectedFilter("All")}
                     className="mt-4 text-sm text-cyan-400 hover:text-cyan-300 underline"
                   >
                     Clear filter
@@ -810,15 +886,17 @@ const Projects = ({ className }: ProjectsProps) => {
           {/* Bottom Stats */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.6 }}
             className="mt-12 text-center"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/5 border border-cyan-500/20 rounded-full">
               <Sparkles className="w-4 h-4 text-cyan-400" />
               <span className="text-sm text-gray-400">
-                {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''} displayed
-                {selectedFilter !== 'All' && ` • ${projects.length} total`}
+                {filteredProjects.length} project
+                {filteredProjects.length !== 1 ? "s" : ""} displayed
+                {selectedFilter !== "All" && ` • ${projects.length} total`}
               </span>
             </div>
           </motion.div>

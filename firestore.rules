@@ -93,6 +93,16 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // ==================== Achievements ====================
+    
+    match /achievements/{achievementId} {
+      // Anyone can read achievements
+      allow read: if true;
+      
+      // Only admins can modify achievements
+      allow create, update, delete: if isAdmin();
+    }
+    
     // ==================== Contact Submissions ====================
     
     match /contact_submissions/{submissionId} {

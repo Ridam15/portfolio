@@ -161,7 +161,7 @@ export default function HeroEditor() {
 
       toast.dismiss(loadingToast);
       toast.success('Hero section updated successfully!');
-      
+
       // Reset dirty state
       reset(formData);
     } catch (error) {
@@ -194,7 +194,7 @@ export default function HeroEditor() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
-          <p className="text-gray-400 text-sm">Loading hero data...</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">Loading hero data...</p>
         </div>
       </div>
     );
@@ -213,19 +213,17 @@ export default function HeroEditor() {
             <div className="flex items-center gap-3">
               <Home className="w-8 h-8 text-blue-400" />
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
                   Edit Hero Section
                 </h1>
-                <p className="text-gray-400 text-sm md:text-base mt-1">
+                <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base mt-1">
                   Update your name, tagline, roles, and social links for the hero section.
                 </p>
               </div>
             </div>
-            <Link href="/admin">
-              <Button variant="outline" className="border-gray-700 flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Dashboard
-              </Button>
+            <Link href="/admin" className="btn-back-dashboard">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Dashboard
             </Link>
           </div>
         </motion.div>
@@ -244,7 +242,7 @@ export default function HeroEditor() {
               'px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2',
               showPreview
                 ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-700'
             )}
           >
             <Eye className="w-4 h-4" />
@@ -262,12 +260,12 @@ export default function HeroEditor() {
               className="mb-6"
             >
               <GlassCard variant="bordered" className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <Eye className="w-5 h-5 text-blue-400" />
                   Live Preview
                 </h3>
                 <div className="space-y-2 text-center">
-                  <h1 className="text-4xl font-bold text-white">
+                  <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
                     {watchedValues.name || 'Your Name'}
                   </h1>
                   <div className="flex flex-wrap justify-center gap-2 text-cyan-400">
@@ -278,7 +276,7 @@ export default function HeroEditor() {
                       </span>
                     ))}
                   </div>
-                  <p className="text-gray-400 max-w-2xl mx-auto">
+                  <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                     {watchedValues.tagline || 'Your tagline'}
                   </p>
                   {watchedValues.location && (
@@ -296,7 +294,7 @@ export default function HeroEditor() {
             <div className="space-y-6">
               {/* Name Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Name <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -304,9 +302,9 @@ export default function HeroEditor() {
                   type="text"
                   placeholder="Your full name"
                   className={cn(
-                    'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-500',
+                    'w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500',
                     'focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300',
-                    errors.name ? 'border-red-500' : 'border-gray-700'
+                    errors.name ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
                   )}
                 />
                 {errors.name && (
@@ -319,7 +317,7 @@ export default function HeroEditor() {
 
               {/* Tagline Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Tagline <span className="text-red-400">*</span>
                 </label>
                 <textarea
@@ -327,9 +325,9 @@ export default function HeroEditor() {
                   rows={3}
                   placeholder="A brief description about you"
                   className={cn(
-                    'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-500',
+                    'w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500',
                     'focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300 resize-none',
-                    errors.tagline ? 'border-red-500' : 'border-gray-700'
+                    errors.tagline ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
                   )}
                 />
                 {errors.tagline && (
@@ -342,21 +340,21 @@ export default function HeroEditor() {
 
               {/* Location Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Location
                 </label>
                 <input
                   {...register('location')}
                   type="text"
                   placeholder="City, Country"
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
                 />
               </div>
 
               {/* Roles Field */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-300">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Roles <span className="text-red-400">*</span>
                   </label>
                   <button
@@ -375,7 +373,7 @@ export default function HeroEditor() {
                         {...register(`roles.${index}` as const)}
                         type="text"
                         placeholder="e.g., Full-Stack Developer"
-                        className="flex-1 px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                        className="flex-1 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
                       />
                       {roleFields.length > 1 && (
                         <button
@@ -400,7 +398,7 @@ export default function HeroEditor() {
               {/* Social Links */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-300">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Social Links
                   </label>
                   <button
@@ -417,7 +415,7 @@ export default function HeroEditor() {
                     <div key={field.id} className="flex gap-2">
                       <select
                         {...register(`socialLinks.${index}.platform` as const)}
-                        className="px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                        className="px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
                       >
                         {socialPlatforms.map(platform => (
                           <option key={platform.value} value={platform.value}>
@@ -429,7 +427,7 @@ export default function HeroEditor() {
                         {...register(`socialLinks.${index}.url` as const)}
                         type="url"
                         placeholder="https://..."
-                        className="flex-1 px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                        className="flex-1 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
                       />
                       <button
                         type="button"
@@ -446,7 +444,7 @@ export default function HeroEditor() {
               {/* CTA Buttons */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-300">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     CTA Buttons
                   </label>
                   <button
@@ -465,17 +463,17 @@ export default function HeroEditor() {
                         {...register(`ctaButtons.${index}.text` as const)}
                         type="text"
                         placeholder="Button Text"
-                        className="flex-1 min-w-[150px] px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                        className="flex-1 min-w-[150px] px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
                       />
                       <input
                         {...register(`ctaButtons.${index}.url` as const)}
                         type="text"
                         placeholder="Link or #section"
-                        className="flex-1 min-w-[150px] px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                        className="flex-1 min-w-[150px] px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
                       />
                       <select
                         {...register(`ctaButtons.${index}.variant` as const)}
-                        className="px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
+                        className="px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-300"
                       >
                         <option value="primary">Primary</option>
                         <option value="secondary">Secondary</option>
@@ -524,7 +522,7 @@ export default function HeroEditor() {
                 disabled={isSaving || !isDirty}
                 className={cn(
                   'px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2',
-                  'bg-gray-800 text-gray-300 hover:bg-gray-700',
+                  'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-700',
                   'disabled:opacity-50 disabled:cursor-not-allowed'
                 )}
               >

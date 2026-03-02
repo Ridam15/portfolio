@@ -38,6 +38,7 @@ import { uploadFile } from '@/lib/firebase/storage';
 import { cn } from '@/lib/utils';
 import GlassCard from '@/components/effects/GlassCard';
 import { Button } from '@/components/ui/button';
+import { TechnologyDropdown } from '@/components/TechnologyDropdown';
 import type { Project } from '@/types/portfolio';
 
 // ==================== Validation Schema ====================
@@ -245,15 +246,15 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <FolderGit2 className="w-6 h-6 text-orange-400" />
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {project ? 'Edit Project' : 'Add New Project'}
                 </h2>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
               >
-                <X className="w-5 h-5 text-gray-400" />
+                <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               </button>
             </div>
 
@@ -261,7 +262,7 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Thumbnail Upload */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Project Thumbnail
                 </label>
                 <input
@@ -278,7 +279,7 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
                     'flex items-center justify-center overflow-hidden',
                     thumbnailPreview
                       ? 'border-orange-500/50 bg-gray-800/30'
-                      : 'border-gray-700 hover:border-orange-500/50 hover:bg-gray-800/50'
+                      : 'border-gray-300 dark:border-gray-700 hover:border-orange-500/50 hover:bg-gray-50 dark:bg-gray-800/50'
                   )}
                 >
                   {thumbnailPreview ? (
@@ -290,13 +291,13 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
                         className="object-cover"
                       />
                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                        <Upload className="w-8 h-8 text-white" />
+                        <Upload className="w-8 h-8 text-gray-900 dark:text-white" />
                       </div>
                     </>
                   ) : (
                     <div className="flex flex-col items-center gap-2">
                       <ImageIcon className="w-12 h-12 text-gray-500" />
-                      <span className="text-sm text-gray-400">Click to upload thumbnail</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Click to upload thumbnail</span>
                       <span className="text-xs text-gray-500">Image, max 5MB</span>
                     </div>
                   )}
@@ -306,7 +307,7 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
               {/* Basic Info */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Project Title <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -314,9 +315,9 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
                     type="text"
                     placeholder="e.g., E-commerce Platform"
                     className={cn(
-                      'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-500',
+                      'w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500',
                       'focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300',
-                      errors.title ? 'border-red-500' : 'border-gray-700'
+                      errors.title ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
                     )}
                   />
                   {errors.title && (
@@ -328,24 +329,24 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Category
                   </label>
                   <input
                     {...register('category')}
                     type="text"
                     placeholder="e.g., Web Development"
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Status
                   </label>
                   <select
                     {...register('status')}
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   >
                     <option value="completed">Completed</option>
                     <option value="in-progress">In Progress</option>
@@ -356,7 +357,7 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Short Description <span className="text-red-400">*</span>
                 </label>
                 <textarea
@@ -364,9 +365,9 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
                   rows={3}
                   placeholder="Brief description for project cards..."
                   className={cn(
-                    'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-500',
+                    'w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500',
                     'focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 resize-none',
-                    errors.description ? 'border-red-500' : 'border-gray-700'
+                    errors.description ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
                   )}
                 />
                 {errors.description && (
@@ -379,21 +380,21 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
 
               {/* Long Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Detailed Description (Optional)
                 </label>
                 <textarea
                   {...register('longDescription')}
                   rows={5}
                   placeholder="Full project details, implementation, challenges, outcomes..."
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 resize-none"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300 resize-none"
                 />
               </div>
 
               {/* Tech Stack */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-300">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Tech Stack <span className="text-red-400">*</span>
                   </label>
                   <button
@@ -412,7 +413,7 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
                         {...register(`techStack.${index}` as const)}
                         type="text"
                         placeholder="e.g., React"
-                        className="flex-1 px-4 py-2 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                        className="flex-1 px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                       />
                       {techFields.length > 1 && (
                         <button
@@ -437,7 +438,7 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
               {/* Features */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-300">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Key Features
                   </label>
                   <button
@@ -456,7 +457,7 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
                         {...register(`features.${index}` as const)}
                         type="text"
                         placeholder="e.g., Real-time notifications"
-                        className="flex-1 px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                        className="flex-1 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                       />
                       <button
                         type="button"
@@ -473,38 +474,38 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
               {/* Links */}
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Live URL
                   </label>
                   <input
                     {...register('links.live')}
                     type="url"
                     placeholder="https://..."
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     GitHub URL
                   </label>
                   <input
                     {...register('links.github')}
                     type="url"
                     placeholder="https://github.com/..."
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Demo URL
                   </label>
                   <input
                     {...register('links.demo')}
                     type="url"
                     placeholder="https://..."
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   />
                 </div>
               </div>
@@ -512,36 +513,36 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
               {/* Additional Info */}
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Your Role
                   </label>
                   <input
                     {...register('role')}
                     type="text"
                     placeholder="e.g., Lead Developer"
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Start Date
                   </label>
                   <input
                     {...register('startDate')}
                     type="month"
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     End Date
                   </label>
                   <input
                     {...register('endDate')}
                     type="month"
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   />
                 </div>
               </div>
@@ -549,26 +550,26 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
               {/* Order & Featured */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Display Order
                   </label>
                   <input
                     {...register('order', { valueAsNumber: true })}
                     type="number"
                     min="0"
-                    className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
+                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500/50 transition-all duration-300"
                   />
                 </div>
 
                 <div className="flex items-end">
-                  <label className="flex items-center gap-2 px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 cursor-pointer hover:bg-gray-800/70 transition-colors w-full">
+                  <label className="flex items-center gap-2 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800/70 transition-colors w-full">
                     <input
                       {...register('featured')}
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-orange-600 focus:ring-2 focus:ring-orange-500/50"
                     />
                     <Star className="w-4 h-4 text-yellow-400" />
-                    <span className="text-sm text-gray-300">Featured Project</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300">Featured Project</span>
                   </label>
                 </div>
               </div>
@@ -601,7 +602,7 @@ function ProjectModal({ isOpen, onClose, project, onSave, maxOrder }: ProjectMod
                   type="button"
                   onClick={onClose}
                   disabled={isSaving}
-                  className="px-6 py-3 rounded-lg font-semibold bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors disabled:opacity-50"
+                  className="px-6 py-3 rounded-lg font-semibold border border-gray-300 dark:border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -648,9 +649,9 @@ function ConfirmDialog({ isOpen, onClose, onConfirm, title, message }: ConfirmDi
               <div className="p-3 rounded-full bg-red-600/20">
                 <AlertCircle className="w-6 h-6 text-red-400" />
               </div>
-              <h3 className="text-xl font-bold text-white">{title}</h3>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white">{title}</h3>
             </div>
-            <p className="text-gray-300 mb-6">{message}</p>
+            <p className="text-gray-700 dark:text-gray-300 mb-6">{message}</p>
             <div className="flex gap-3">
               <button
                 onClick={onConfirm}
@@ -660,7 +661,7 @@ function ConfirmDialog({ isOpen, onClose, onConfirm, title, message }: ConfirmDi
               </button>
               <button
                 onClick={onClose}
-                className="flex-1 px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors font-semibold"
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-semibold"
               >
                 Cancel
               </button>
@@ -706,6 +707,16 @@ export default function ProjectEditor() {
 
   // Get all unique technologies
   const allTechnologies = ['All', ...Array.from(new Set(projects.flatMap(p => p.techStack)))].sort();
+
+  // Calculate project counts for each technology
+  const projectCounts: Record<string, number> = {
+    'All': projects.length,
+  };
+  allTechnologies.forEach((tech) => {
+    if (tech !== 'All') {
+      projectCounts[tech] = projects.filter((p) => p.techStack.includes(tech)).length;
+    }
+  });
 
   const maxOrder = projects.length > 0 ? Math.max(...projects.map(p => p.order)) : 0;
 
@@ -807,7 +818,7 @@ export default function ProjectEditor() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 text-orange-500 animate-spin" />
-          <p className="text-gray-400 text-sm">Loading projects...</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">Loading projects...</p>
         </div>
       </div>
     );
@@ -826,24 +837,22 @@ export default function ProjectEditor() {
             <div className="flex items-center gap-3">
               <FolderGit2 className="w-8 h-8 text-orange-400" />
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
                   Manage Projects
                 </h1>
-                <p className="text-gray-400 text-sm md:text-base mt-1">
+                <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base mt-1">
                   Manage your portfolio projects. You have {projects.length} {projects.length === 1 ? 'project' : 'projects'}.
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/admin">
-                <Button variant="outline" className="border-gray-700 flex items-center gap-2">
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Dashboard
-                </Button>
+              <Link href="/admin" className="btn-back-dashboard">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Dashboard
               </Link>
               <button
                 onClick={handleAddNew}
-                className="px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 flex items-center gap-2 font-semibold"
+                className="admin-btn px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 flex items-center gap-2 font-semibold"
               >
                 <Plus className="w-5 h-5" />
                 Add Project
@@ -862,24 +871,15 @@ export default function ProjectEditor() {
           >
             <div className="flex items-center gap-2 mb-3">
               <Filter className="w-5 h-5 text-cyan-400" />
-              <span className="text-sm font-medium text-gray-300">Filter by Technology:</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Filter by Technology:</span>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {allTechnologies.map(tech => (
-                <button
-                  key={tech}
-                  onClick={() => setSelectedTech(tech)}
-                  className={cn(
-                    'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300',
-                    selectedTech === tech
-                      ? 'bg-orange-600/40 text-white border border-orange-500 shadow-lg shadow-orange-500/20'
-                      : 'bg-gray-800/50 text-gray-300 border border-gray-700 hover:bg-gray-700/50 hover:border-orange-500/30'
-                  )}
-                >
-                  {tech}
-                </button>
-              ))}
-            </div>
+            <TechnologyDropdown
+              technologies={allTechnologies}
+              selectedTech={selectedTech}
+              onSelectTech={setSelectedTech}
+              projectCounts={projectCounts}
+              maxVisible={5}
+            />
           </motion.div>
         )}
 
@@ -891,7 +891,7 @@ export default function ProjectEditor() {
           >
             <GlassCard variant="subtle" className="p-12 text-center">
               <Filter className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-400 mb-2">
+              <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
                 No Projects Found
               </h3>
               <p className="text-gray-500 mb-6">
@@ -899,7 +899,7 @@ export default function ProjectEditor() {
               </p>
               <button
                 onClick={() => setSelectedTech('All')}
-                className="px-6 py-3 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors font-semibold"
+                className="px-6 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors font-semibold"
               >
                 Show All Projects
               </button>
@@ -912,7 +912,7 @@ export default function ProjectEditor() {
           >
             <GlassCard variant="subtle" className="p-12 text-center">
               <FolderGit2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-400 mb-2">
+              <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
                 No Projects Added Yet
               </h3>
               <p className="text-gray-500 mb-6">
@@ -938,7 +938,7 @@ export default function ProjectEditor() {
               >
                 <GlassCard variant="default" className="p-0 overflow-hidden group" enableHover>
                   {/* Thumbnail */}
-                  <div className="relative w-full h-48 bg-gray-800">
+                  <div className="relative w-full h-48 bg-gray-100 dark:bg-gray-800">
                     {project.thumbnail ? (
                       <Image
                         src={project.thumbnail}
@@ -962,10 +962,10 @@ export default function ProjectEditor() {
 
                   {/* Content */}
                   <div className="p-4">
-                    <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-1">
                       {project.title}
                     </h3>
-                    <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
                       {project.description}
                     </p>
 
@@ -974,7 +974,7 @@ export default function ProjectEditor() {
                       {project.techStack.slice(0, 4).map((tech, techIndex) => (
                         <span
                           key={techIndex}
-                          className="px-2 py-1 bg-gray-800 text-cyan-300 text-xs rounded-full border border-cyan-500/20"
+                          className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-cyan-300 text-xs rounded-full border border-cyan-500/20"
                         >
                           {tech}
                         </span>

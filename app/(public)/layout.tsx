@@ -7,7 +7,7 @@ interface PublicLayoutProps {
 
 export default function PublicLayout({ children }: PublicLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-950 text-white scroll-smooth">
+    <div className="dark min-h-screen bg-gray-950 text-white scroll-smooth" style={{ colorScheme: 'dark' }}>
       <Navigation />
       <main className="relative">
         {children}

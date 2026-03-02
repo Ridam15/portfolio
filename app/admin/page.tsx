@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   User,
   Briefcase,
@@ -23,18 +23,19 @@ import {
   Layers,
   LogOut,
   Loader2,
-} from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import useAuth from '@/lib/hooks/useAuth';
-import { usePortfolioData } from '@/lib/hooks/useFirestore';
-import { useExperiences } from '@/lib/hooks/useExperiences';
-import { logOut } from '@/lib/firebase/auth';
-import { db } from '@/lib/firebase/config';
-import { collection, getCountFromServer } from 'firebase/firestore';
-import { cn, formatDate } from '@/lib/utils';
-import GlassCard from '@/components/effects/GlassCard';
-import { Button } from '@/components/ui/button';
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import useAuth from "@/lib/hooks/useAuth";
+import { usePortfolioData } from "@/lib/hooks/useFirestore";
+import { useExperiences } from "@/lib/hooks/useExperiences";
+import { useProjects } from "@/lib/hooks/useProjects";
+import { logOut } from "@/lib/firebase/auth";
+import { db } from "@/lib/firebase/config";
+import { collection, getCountFromServer } from "firebase/firestore";
+import { cn, formatDate } from "@/lib/utils";
+import GlassCard from "@/components/effects/GlassCard";
+import { Button } from "@/components/ui/button";
 
 // ==================== Types ====================
 
@@ -99,139 +100,225 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const { data, loading, error } = usePortfolioData();
   const { experiences, loading: experiencesLoading } = useExperiences();
+  const { projects: fetchedProjects, loading: projectsLoading } = useProjects();
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
-  const [contactSubmissionsCount, setContactSubmissionsCount] = useState<number>(0);
+  const [contactSubmissionsCount, setContactSubmissionsCount] =
+    useState<number>(0);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // Get admin name from user email or display name
-  const adminName = user?.displayName || user?.email?.split('@')[0] || 'Admin';
+  const adminName = user?.displayName || user?.email?.split("@")[0] || "Admin";
 
   // Handle logout
   const handleLogout = async () => {
-    if (!confirm('Are you sure you want to logout?')) return;
+    if (!confirm("Are you sure you want to logout?")) return;
 
     setIsLoggingOut(true);
-    const loadingToast = toast.loading('Logging out...');
+    const loadingToast = toast.loading("Logging out...");
 
     try {
       await logOut();
       toast.dismiss(loadingToast);
-      toast.success('Logged out successfully');
-      router.push('/admin-login');
+      toast.success("Logged out successfully");
+      router.push("/admin-login");
     } catch (error) {
       toast.dismiss(loadingToast);
-      toast.error('Failed to logout');
-      console.error('Logout error:', error);
+      toast.error("Failed to logout");
+      console.error("Logout error:", error);
       setIsLoggingOut(false);
     }
   };
 
-  // Calculate stats - use real data from collections
-  const totalProjects = data?.projects?.length || 0; // TODO: Create useProjects hook
-  const totalExperiences = experiences?.length || 0; // ✅ Now using real data!
-  const totalSkills = data?.skillCategories?.reduce((acc, cat) => acc + cat.skills.length, 0) || 0; // TODO: Create useSkills hook
-  const totalCertifications = (data?.certifications?.length || 0) + (data?.achievements?.length || 0);
+  // Calculate stats - use real data from each collection
+  const totalProjects = fetchedProjects?.length || 0; // ✅ Using useProjects hook → reads 'projects' collection
+  const totalExperiences = experiences?.length || 0; // ✅ Using useExperiences hook → reads 'experiences' collection
+  const totalSkills =
+    data?.skillCategories?.reduce((acc, cat) => acc + cat.skills.length, 0) ||
+    0;
+  const totalCertifications =
+    (data?.certifications?.length || 0) + (data?.achievements?.length || 0);
+
+  // Compute Recent Activity
+  const allActivity = React.useMemo(() => {
+    const activity: { label: string; date: Date; type: "added" | "updated" }[] =
+      [];
+
+    const getDate = (ts: any) => {
+      if (!ts) return null;
+      if (ts.toDate) return ts.toDate();
+      if (typeof ts.seconds === "number") return new Date(ts.seconds * 1000);
+      if (ts instanceof Date) return ts;
+      return new Date(ts);
+    };
+
+    experiences?.forEach((e) => {
+      const c = getDate(e.createdAt);
+      const u = getDate(e.updatedAt);
+      if (c)
+        activity.push({
+          label: `Experience added: ${e.company}`,
+          date: c,
+          type: "added",
+        });
+      if (u && (!c || u.getTime() - c.getTime() > 5000))
+        activity.push({
+          label: `Updated experience: ${e.company}`,
+          date: u,
+          type: "updated",
+        });
+    });
+
+    fetchedProjects?.forEach((p) => {
+      const c = getDate(p.createdAt);
+      const u = getDate(p.updatedAt);
+      if (c)
+        activity.push({
+          label: `Project added: ${p.title}`,
+          date: c,
+          type: "added",
+        });
+      if (u && (!c || u.getTime() - c.getTime() > 5000))
+        activity.push({
+          label: `Updated project: ${p.title}`,
+          date: u,
+          type: "updated",
+        });
+    });
+
+    data?.certifications?.forEach((c) => {
+      const d = getDate(c.createdAt);
+      const u = getDate(c.updatedAt);
+      if (d)
+        activity.push({
+          label: `Cert added: ${c.title}`,
+          date: d,
+          type: "added",
+        });
+      if (u && (!d || u.getTime() - d.getTime() > 5000))
+        activity.push({
+          label: `Updated cert: ${c.title}`,
+          date: u,
+          type: "updated",
+        });
+    });
+
+    return activity
+      .sort((a, b) => b.date.getTime() - a.date.getTime())
+      .slice(0, 5);
+  }, [experiences, fetchedProjects, data]);
+
+  const getRelativeTime = (date: Date) => {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    if (diffMs < 60000) return "Just now";
+    if (diffMs < 3600000) return `${Math.floor(diffMs / 60000)}m ago`;
+    if (diffMs < 86400000) return `${Math.floor(diffMs / 3600000)}h ago`;
+    return `${Math.floor(diffMs / 86400000)}d ago`;
+  };
 
   // Quick stats configuration
   const quickStats: QuickStat[] = [
     {
-      id: 'projects',
-      label: 'Total Projects',
+      id: "projects",
+      label: "Total Projects",
       value: totalProjects,
       icon: FolderGit2,
-      color: 'text-blue-400',
-      change: totalProjects > 0 ? '+' + totalProjects : undefined,
+      color: "text-blue-400",
+      change: totalProjects > 0 ? "+" + totalProjects : undefined,
     },
     {
-      id: 'experience',
-      label: 'Work Experience',
+      id: "experience",
+      label: "Work Experience",
       value: totalExperiences,
       icon: Briefcase,
-      color: 'text-purple-400',
-      change: totalExperiences > 0 ? '+' + totalExperiences : undefined,
+      color: "text-purple-400",
+      change: totalExperiences > 0 ? "+" + totalExperiences : undefined,
     },
     {
-      id: 'submissions',
-      label: 'Contact Submissions',
+      id: "submissions",
+      label: "Contact Submissions",
       value: contactSubmissionsCount,
       icon: Mail,
-      color: 'text-green-400',
-      change: contactSubmissionsCount > 0 ? 'New' : undefined,
+      color: "text-green-400",
+      change: contactSubmissionsCount > 0 ? "New" : undefined,
     },
     {
-      id: 'updated',
-      label: 'Last Updated',
-      value: formatDate(lastUpdated.toISOString(), { month: 'short', day: 'numeric' }),
+      id: "updated",
+      label: "Last Updated",
+      value: formatDate(lastUpdated.toISOString(), {
+        month: "short",
+        day: "numeric",
+      }),
       icon: Calendar,
-      color: 'text-cyan-400',
+      color: "text-cyan-400",
     },
   ];
 
   // Quick actions configuration
   const quickActions: QuickAction[] = [
     {
-      id: 'hero',
-      title: 'Edit Hero Section',
-      description: 'Update your name, roles, and hero content',
+      id: "hero",
+      title: "Edit Hero Section",
+      description: "Update your name, roles, and hero content",
       icon: Home,
-      href: '/admin/edit/hero',
-      color: 'from-blue-500 to-cyan-500',
+      href: "/admin/edit/hero",
+      color: "from-blue-500 to-cyan-500",
     },
     {
-      id: 'about',
-      title: 'Edit About',
-      description: 'Manage your bio and professional summary',
+      id: "about",
+      title: "Edit About",
+      description: "Manage your bio and professional summary",
       icon: User,
-      href: '/admin/edit/about',
-      color: 'from-purple-500 to-pink-500',
+      href: "/admin/edit/about",
+      color: "from-purple-500 to-pink-500",
     },
     {
-      id: 'experience',
-      title: 'Manage Experience',
-      description: 'Add or edit your work experience',
+      id: "experience",
+      title: "Manage Experience",
+      description: "Add or edit your work experience",
       icon: Briefcase,
-      href: '/admin/edit/experience',
-      color: 'from-green-500 to-emerald-500',
+      href: "/admin/edit/experience",
+      color: "from-green-500 to-emerald-500",
     },
     {
-      id: 'projects',
-      title: 'Manage Projects',
-      description: 'Showcase your portfolio projects',
+      id: "projects",
+      title: "Manage Projects",
+      description: "Showcase your portfolio projects",
       icon: FolderGit2,
-      href: '/admin/edit/projects',
-      color: 'from-orange-500 to-red-500',
+      href: "/admin/edit/projects",
+      color: "from-orange-500 to-red-500",
     },
     {
-      id: 'skills',
-      title: 'Manage Skills',
-      description: 'Update your technical skills and expertise',
+      id: "skills",
+      title: "Manage Skills",
+      description: "Update your technical skills and expertise",
       icon: Code2,
-      href: '/admin/edit/skills',
-      color: 'from-indigo-500 to-purple-500',
+      href: "/admin/edit/skills",
+      color: "from-indigo-500 to-purple-500",
     },
     {
-      id: 'certifications',
-      title: 'Manage Certifications',
-      description: 'Add certifications and achievements',
+      id: "certifications",
+      title: "Manage Certifications",
+      description: "Add certifications and achievements",
       icon: Award,
-      href: '/admin/edit/certifications',
-      color: 'from-yellow-500 to-orange-500',
+      href: "/admin/edit/certifications",
+      color: "from-yellow-500 to-orange-500",
     },
     {
-      id: 'contact',
-      title: 'View Contact Submissions',
-      description: 'Review messages from visitors',
+      id: "contact",
+      title: "View Contact Submissions",
+      description: "Review messages from visitors",
       icon: Mail,
-      href: '/admin/contact-submissions',
-      color: 'from-teal-500 to-cyan-500',
+      href: "/admin/contact-submissions",
+      color: "from-teal-500 to-cyan-500",
     },
     {
-      id: 'settings',
-      title: 'Site Settings',
-      description: 'Configure site metadata and preferences',
+      id: "settings",
+      title: "Site Settings",
+      description: "Configure site metadata and preferences",
       icon: Settings,
-      href: '/admin/settings',
-      color: 'from-gray-500 to-gray-600',
+      href: "/admin/settings",
+      color: "from-gray-500 to-gray-600",
     },
   ];
 
@@ -239,11 +326,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchCount = async () => {
       try {
-        const coll = collection(db, 'contact_submissions');
+        const coll = collection(db, "contact_submissions");
         const snapshot = await getCountFromServer(coll);
         setContactSubmissionsCount(snapshot.data().count);
       } catch (error) {
-        console.error('Error fetching contact submissions count:', error);
+        console.error("Error fetching contact submissions count:", error);
       }
     };
 
@@ -251,7 +338,7 @@ export default function AdminDashboard() {
   }, []);
 
   // Loading state
-  if (loading || experiencesLoading) {
+  if (loading || experiencesLoading || projectsLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -268,7 +355,9 @@ export default function AdminDashboard() {
       <div className="min-h-screen flex items-center justify-center">
         <GlassCard variant="bordered" className="p-8 max-w-md text-center">
           <div className="text-red-400 mb-4">⚠️</div>
-          <h2 className="text-xl font-bold text-white mb-2">Error Loading Dashboard</h2>
+          <h2 className="text-xl font-bold text-white mb-2">
+            Error Loading Dashboard
+          </h2>
           <p className="text-gray-400 text-sm">{error.message}</p>
         </GlassCard>
       </div>
@@ -289,12 +378,14 @@ export default function AdminDashboard() {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <Sparkles className="w-8 h-8 text-yellow-400" />
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
-                  Welcome back, <span className="text-gradient-animate">{adminName}</span>!
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                  Welcome back,{" "}
+                  <span className="text-gradient-animate">{adminName}</span>!
                 </h1>
               </div>
-              <p className="text-gray-400 text-sm md:text-base">
-                Manage your portfolio content and track engagement from your dashboard.
+              <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
+                Manage your portfolio content and track engagement from your
+                dashboard.
               </p>
             </div>
             <Button
@@ -320,8 +411,8 @@ export default function AdminDashboard() {
 
         {/* Quick Stats */}
         <motion.div variants={itemVariants} className="mb-8">
-          <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-cyan-400" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
             Quick Stats
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -335,7 +426,12 @@ export default function AdminDashboard() {
               >
                 <GlassCard variant="subtle" className="p-6 h-full">
                   <div className="flex items-center justify-between mb-4">
-                    <div className={cn('p-3 rounded-lg bg-gray-800/50', stat.color)}>
+                    <div
+                      className={cn(
+                        "p-3 rounded-lg bg-gray-100 dark:bg-gray-800/50",
+                        stat.color,
+                      )}
+                    >
                       <stat.icon className="w-6 h-6" />
                     </div>
                     {stat.change && (
@@ -345,8 +441,12 @@ export default function AdminDashboard() {
                     )}
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-1">
+                      {stat.label}
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {stat.value}
+                    </p>
                   </div>
                 </GlassCard>
               </motion.div>
@@ -356,8 +456,8 @@ export default function AdminDashboard() {
 
         {/* Quick Actions */}
         <motion.div variants={itemVariants}>
-          <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-yellow-400" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <Zap className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
             Quick Actions
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -381,9 +481,9 @@ export default function AdminDashboard() {
                       {/* Gradient overlay */}
                       <div
                         className={cn(
-                          'absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300',
-                          'bg-gradient-to-br',
-                          action.color
+                          "absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300",
+                          "bg-gradient-to-br",
+                          action.color,
                         )}
                       />
 
@@ -392,8 +492,8 @@ export default function AdminDashboard() {
                         <div className="flex items-center justify-between mb-4">
                           <div
                             className={cn(
-                              'p-3 rounded-lg bg-gradient-to-br shadow-lg',
-                              action.color
+                              "p-3 rounded-lg bg-gradient-to-br shadow-lg",
+                              action.color,
                             )}
                           >
                             <action.icon className="w-6 h-6 text-white" />
@@ -401,10 +501,12 @@ export default function AdminDashboard() {
                           <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-gradient-animate transition-colors duration-300">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-cyan-500 dark:group-hover:text-gradient-animate transition-colors duration-300">
                             {action.title}
                           </h3>
-                          <p className="text-gray-400 text-sm">{action.description}</p>
+                          <p className="text-gray-500 dark:text-gray-400 text-sm">
+                            {action.description}
+                          </p>
                         </div>
                       </div>
                     </GlassCard>
@@ -421,37 +523,76 @@ export default function AdminDashboard() {
             {/* Recent Activity */}
             <GlassCard variant="bordered" className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <TrendingUp className="w-5 h-5 text-green-400" />
-                <h3 className="text-lg font-semibold text-white">Recent Activity</h3>
+                <TrendingUp className="w-5 h-5 text-green-500 dark:text-green-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Recent Activity
+                </h3>
               </div>
               <div className="space-y-3">
-                {loading ? (
+                {loading || experiencesLoading || projectsLoading ? (
                   <p className="text-gray-500 text-sm">Loading activity...</p>
-                ) : (
+                ) : allActivity.length > 0 ? (
                   <>
-                    <div className="flex items-center justify-between py-2 border-b border-gray-800/50">
+                    <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-800/50">
                       <div className="flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-gray-300 text-sm">Dashboard accessed</span>
+                        <span className="text-gray-700 dark:text-gray-300 text-sm font-medium">
+                          Dashboard accessed
+                        </span>
                       </div>
                       <span className="text-gray-500 text-xs">Just now</span>
                     </div>
-                    <div className="flex items-center justify-between py-2 border-b border-gray-800/50">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-blue-500" />
-                        <span className="text-gray-300 text-sm">Portfolio data loaded</span>
-                      </div>
-                      <span className="text-gray-500 text-xs">1m ago</span>
-                    </div>
-                    {totalProjects === 0 && totalExperiences === 0 && (
-                      <div className="flex items-center justify-between py-2">
+                    {allActivity.map((act, i) => (
+                      <div
+                        key={i}
+                        className={cn(
+                          "flex items-center justify-between py-2",
+                          i !== allActivity.length - 1 &&
+                            "border-b border-gray-200 dark:border-gray-800/50",
+                        )}
+                      >
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                          <span className="text-gray-300 text-sm">Add your first content</span>
+                          <div
+                            className={cn(
+                              "w-2 h-2 rounded-full",
+                              act.type === "added"
+                                ? "bg-cyan-500"
+                                : "bg-purple-500",
+                            )}
+                          />
+                          <span
+                            className="text-gray-700 dark:text-gray-300 text-sm truncate max-w-[200px]"
+                            title={act.label}
+                          >
+                            {act.label}
+                          </span>
                         </div>
-                        <span className="text-gray-500 text-xs">Pending</span>
+                        <span className="text-gray-500 text-xs whitespace-nowrap">
+                          {getRelativeTime(act.date)}
+                        </span>
                       </div>
-                    )}
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between py-2 border-b border-gray-200 dark:border-gray-800/50">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <span className="text-gray-700 dark:text-gray-300 text-sm">
+                          Dashboard accessed
+                        </span>
+                      </div>
+                      <span className="text-gray-500 text-xs">Just now</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                        <span className="text-gray-700 dark:text-gray-300 text-sm">
+                          Pending content creation
+                        </span>
+                      </div>
+                      <span className="text-gray-500 text-xs">-</span>
+                    </div>
                   </>
                 )}
               </div>
@@ -460,19 +601,21 @@ export default function AdminDashboard() {
             {/* Quick Links */}
             <GlassCard variant="bordered" className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <Layers className="w-5 h-5 text-purple-400" />
-                <h3 className="text-lg font-semibold text-white">Quick Links</h3>
+                <Layers className="w-5 h-5 text-purple-500 dark:text-purple-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Quick Links
+                </h3>
               </div>
               <div className="space-y-2">
                 <Link
                   href="/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-800/30 hover:bg-gray-800/50 transition-colors group"
+                  className="flex items-center justify-between p-3 rounded-lg bg-gray-100 dark:bg-gray-800/30 hover:bg-gray-200 dark:hover:bg-gray-800/50 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
-                    <Eye className="w-4 h-4 text-blue-400" />
-                    <span className="text-gray-300 text-sm group-hover:text-white transition-colors">
+                    <Eye className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                    <span className="text-gray-700 dark:text-gray-300 text-sm group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                       View Live Site
                     </span>
                   </div>
@@ -480,11 +623,11 @@ export default function AdminDashboard() {
                 </Link>
                 <Link
                   href="/admin/analytics"
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-800/30 hover:bg-gray-800/50 transition-colors group"
+                  className="flex items-center justify-between p-3 rounded-lg bg-gray-100 dark:bg-gray-800/30 hover:bg-gray-200 dark:hover:bg-gray-800/50 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
-                    <BarChart3 className="w-4 h-4 text-green-400" />
-                    <span className="text-gray-300 text-sm group-hover:text-white transition-colors">
+                    <BarChart3 className="w-4 h-4 text-green-500 dark:text-green-400" />
+                    <span className="text-gray-700 dark:text-gray-300 text-sm group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                       View Analytics
                     </span>
                   </div>
@@ -492,11 +635,11 @@ export default function AdminDashboard() {
                 </Link>
                 <Link
                   href="/admin/settings"
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-800/30 hover:bg-gray-800/50 transition-colors group"
+                  className="flex items-center justify-between p-3 rounded-lg bg-gray-100 dark:bg-gray-800/30 hover:bg-gray-200 dark:hover:bg-gray-800/50 transition-colors group"
                 >
                   <div className="flex items-center gap-3">
-                    <Settings className="w-4 h-4 text-purple-400" />
-                    <span className="text-gray-300 text-sm group-hover:text-white transition-colors">
+                    <Settings className="w-4 h-4 text-purple-500 dark:text-purple-400" />
+                    <span className="text-gray-700 dark:text-gray-300 text-sm group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                       Site Settings
                     </span>
                   </div>
@@ -512,11 +655,12 @@ export default function AdminDashboard() {
           <motion.div variants={itemVariants} className="mt-8">
             <GlassCard variant="glow" className="p-8 text-center">
               <Sparkles className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-              <h3 className="text-2xl font-bold text-white mb-2">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                 Let's Get Started!
               </h3>
-              <p className="text-gray-400 mb-6 max-w-2xl mx-auto">
-                Your portfolio is empty. Start by adding your experience, projects, and skills to showcase your work to the world.
+              <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
+                Your portfolio is empty. Start by adding your experience,
+                projects, and skills to showcase your work to the world.
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Link href="/admin/edit/experience">

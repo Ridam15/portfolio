@@ -251,7 +251,7 @@ export default function AboutEditor() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
-          <p className="text-gray-400 text-sm">Loading about data...</p>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">Loading about data...</p>
         </div>
       </div>
     );
@@ -270,19 +270,17 @@ export default function AboutEditor() {
             <div className="flex items-center gap-3">
               <User className="w-8 h-8 text-purple-400" />
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
                   Edit About Section
                 </h1>
-                <p className="text-gray-400 text-sm md:text-base mt-1">
+                <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base mt-1">
                   Update your bio, tech stack, experience, and profile information.
                 </p>
               </div>
             </div>
-            <Link href="/admin">
-              <Button variant="outline" className="border-gray-700 flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Dashboard
-              </Button>
+            <Link href="/admin" className="btn-back-dashboard">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Dashboard
             </Link>
           </div>
         </motion.div>
@@ -301,7 +299,7 @@ export default function AboutEditor() {
               'px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center gap-2',
               showPreview
                 ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-700'
             )}
           >
             <Eye className="w-4 h-4" />
@@ -319,7 +317,7 @@ export default function AboutEditor() {
               className="mb-6"
             >
               <GlassCard variant="bordered" className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                   <Eye className="w-5 h-5 text-purple-400" />
                   Live Preview
                 </h3>
@@ -345,18 +343,18 @@ export default function AboutEditor() {
                         {watchedValues.yearsOfExperience}+ Years Experience
                       </span>
                     </div>
-                    <p className="text-gray-300 whitespace-pre-wrap">
+                    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                       {watchedValues.bio || 'Your bio will appear here...'}
                     </p>
                     {watchedValues.summary && (
-                      <p className="text-gray-400 text-sm mt-4">
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mt-4">
                         {watchedValues.summary}
                       </p>
                     )}
                     {/* Tech Stack Preview */}
                     {watchedValues.techStack && watchedValues.techStack.length > 0 && (
                       <div className="mt-6">
-                        <h4 className="text-sm font-semibold text-white mb-3">Tech Stack:</h4>
+                        <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Tech Stack:</h4>
                         <div className="flex flex-wrap gap-2">
                           {watchedValues.techStack.map((tech, idx) => (
                             <span
@@ -382,7 +380,7 @@ export default function AboutEditor() {
             <div className="space-y-6">
               {/* Bio Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Bio / Professional Summary <span className="text-red-400">*</span>
                 </label>
                 <textarea
@@ -390,9 +388,9 @@ export default function AboutEditor() {
                   rows={6}
                   placeholder="Write a compelling professional summary..."
                   className={cn(
-                    'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-500',
+                    'w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500',
                     'focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-300 resize-none',
-                    errors.bio ? 'border-red-500' : 'border-gray-700'
+                    errors.bio ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
                   )}
                 />
                 {errors.bio && (
@@ -405,20 +403,20 @@ export default function AboutEditor() {
 
               {/* Summary Field (Optional) */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Additional Summary (Optional)
                 </label>
                 <textarea
                   {...register('summary')}
                   rows={3}
                   placeholder="Additional information or tagline..."
-                  className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-300 resize-none"
+                  className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-300 resize-none"
                 />
               </div>
 
               {/* Years of Experience */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Years of Experience <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -428,9 +426,9 @@ export default function AboutEditor() {
                   step="0.5"
                   placeholder="e.g., 5"
                   className={cn(
-                    'w-full px-4 py-3 rounded-lg bg-gray-800/50 border text-white placeholder-gray-500',
+                    'w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500',
                     'focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-300',
-                    errors.yearsOfExperience ? 'border-red-500' : 'border-gray-700'
+                    errors.yearsOfExperience ? 'border-red-500' : 'border-gray-300 dark:border-gray-700'
                   )}
                 />
                 {errors.yearsOfExperience && (
@@ -444,7 +442,7 @@ export default function AboutEditor() {
               {/* Tech Stack */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-gray-300">
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Tech Stack
                   </label>
                   <button
@@ -463,13 +461,13 @@ export default function AboutEditor() {
                         {...register(`techStack.${index}.name` as const)}
                         type="text"
                         placeholder="e.g., React, Node.js"
-                        className="flex-1 px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-300"
+                        className="flex-1 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-300"
                       />
                       <input
                         {...register(`techStack.${index}.icon` as const)}
                         type="text"
                         placeholder="Icon/Emoji (optional)"
-                        className="w-24 px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-300"
+                        className="w-24 px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-300"
                       />
                       <button
                         type="button"
@@ -492,7 +490,7 @@ export default function AboutEditor() {
               <div className="grid md:grid-cols-2 gap-6 pt-6 border-t border-gray-800">
                 {/* Resume Upload */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Resume (PDF)
                   </label>
                   <input
@@ -511,13 +509,13 @@ export default function AboutEditor() {
                       'flex flex-col items-center justify-center gap-2 min-h-[120px]',
                       isUploadingResume
                         ? 'border-purple-500/50 bg-purple-600/10 cursor-wait'
-                        : 'border-gray-700 hover:border-purple-500/50 hover:bg-gray-800/50 cursor-pointer'
+                        : 'border-gray-300 dark:border-gray-700 hover:border-purple-500/50 hover:bg-gray-50 dark:bg-gray-800/50 cursor-pointer'
                     )}
                   >
                     {isUploadingResume ? (
                       <>
                         <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
-                        <span className="text-sm text-gray-400">Uploading...</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Uploading...</span>
                       </>
                     ) : watchedValues.resumeUrl ? (
                       <>
@@ -528,7 +526,7 @@ export default function AboutEditor() {
                     ) : (
                       <>
                         <FileText className="w-8 h-8 text-gray-500" />
-                        <span className="text-sm text-gray-400">Upload Resume</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Upload Resume</span>
                         <span className="text-xs text-gray-500">PDF, max 5MB</span>
                       </>
                     )}
@@ -547,7 +545,7 @@ export default function AboutEditor() {
 
                 {/* Photo Upload */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Profile Photo (Optional)
                   </label>
                   <input
@@ -566,13 +564,13 @@ export default function AboutEditor() {
                       'flex flex-col items-center justify-center gap-2 min-h-[120px] relative overflow-hidden',
                       isUploadingPhoto
                         ? 'border-purple-500/50 bg-purple-600/10 cursor-wait'
-                        : 'border-gray-700 hover:border-purple-500/50 hover:bg-gray-800/50 cursor-pointer'
+                        : 'border-gray-300 dark:border-gray-700 hover:border-purple-500/50 hover:bg-gray-50 dark:bg-gray-800/50 cursor-pointer'
                     )}
                   >
                     {isUploadingPhoto ? (
                       <>
                         <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
-                        <span className="text-sm text-gray-400">Uploading...</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Uploading...</span>
                       </>
                     ) : photoPreview ? (
                       <>
@@ -590,7 +588,7 @@ export default function AboutEditor() {
                     ) : (
                       <>
                         <ImageIcon className="w-8 h-8 text-gray-500" />
-                        <span className="text-sm text-gray-400">Upload Photo</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Upload Photo</span>
                         <span className="text-xs text-gray-500">Image, max 2MB</span>
                       </>
                     )}
@@ -629,7 +627,7 @@ export default function AboutEditor() {
                 disabled={isSaving || !isDirty}
                 className={cn(
                   'px-6 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2',
-                  'bg-gray-800 text-gray-300 hover:bg-gray-700',
+                  'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-700',
                   'disabled:opacity-50 disabled:cursor-not-allowed'
                 )}
               >

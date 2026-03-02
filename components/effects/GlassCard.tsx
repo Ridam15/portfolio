@@ -11,40 +11,40 @@ interface GlassCardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
    * Content to be rendered inside the card
    */
   children: ReactNode;
-  
+
   /**
    * Additional CSS classes to merge with default styles
    */
   className?: string;
-  
+
   /**
    * Variant of the glass card (determines intensity and style)
    * @default 'default'
    */
   variant?: 'default' | 'subtle' | 'strong' | 'bordered' | 'glow';
-  
+
   /**
    * Whether to enable hover effects
    * @default true
    */
   enableHover?: boolean;
-  
+
   /**
    * Whether to enable tap/click animations
    * @default true
    */
   enableTap?: boolean;
-  
+
   /**
    * Custom padding (overrides default padding)
    */
   padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  
+
   /**
    * Click handler
    */
   onClick?: () => void;
-  
+
   /**
    * Whether the card is interactive (shows cursor pointer)
    * @default false
@@ -56,39 +56,44 @@ interface GlassCardProps extends Omit<HTMLMotionProps<'div'>, 'children'> {
 
 const variantStyles = {
   default: `
-    bg-gray-900/60 
+    bg-white/80 dark:bg-gray-900/60 
     backdrop-blur-lg 
-    border border-cyan-500/10 
-    shadow-lg shadow-black/20
+    border border-gray-200 dark:border-cyan-500/10 
+    shadow-lg shadow-black/5 dark:shadow-black/20
+    text-gray-800 dark:text-white
   `,
-  
+
   subtle: `
-    bg-gray-900/40 
+    bg-white/60 dark:bg-gray-900/40 
     backdrop-blur-md 
-    border border-gray-700/30
-    shadow-md shadow-black/10
+    border border-gray-200/50 dark:border-gray-700/30
+    shadow-md shadow-black/5 dark:shadow-black/10
+    text-gray-800 dark:text-white
   `,
-  
+
   strong: `
-    bg-gray-900/80 
+    bg-white/90 dark:bg-gray-900/80 
     backdrop-blur-xl 
-    border border-cyan-500/20 
-    shadow-xl shadow-cyan-500/5
+    border border-gray-300 dark:border-cyan-500/20 
+    shadow-xl shadow-black/10 dark:shadow-cyan-500/5
+    text-gray-800 dark:text-white
   `,
-  
+
   bordered: `
-    bg-gray-900/50 
+    bg-white/70 dark:bg-gray-900/50 
     backdrop-blur-lg 
-    border-2 border-cyan-500/30 
+    border-2 border-cyan-500/50 dark:border-cyan-500/30 
     shadow-lg shadow-cyan-500/10
+    text-gray-800 dark:text-white
   `,
-  
+
   glow: `
-    bg-gray-900/60 
+    bg-white/80 dark:bg-gray-900/60 
     backdrop-blur-lg 
-    border border-cyan-500/20 
+    border border-cyan-500/30 dark:border-cyan-500/20 
     shadow-[0_0_20px_rgba(6,182,212,0.15)] 
     shadow-cyan-500/20
+    text-gray-800 dark:text-white
   `,
 };
 
@@ -198,21 +203,21 @@ const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
         className={cn(
           // Base styles
           'rounded-xl overflow-hidden transition-all duration-300',
-          
+
           // Variant-specific styles
           variantStyles[variant],
-          
+
           // Padding
           paddingStyles[padding],
-          
+
           // Interactive styles
           isClickable && 'cursor-pointer',
-          
+
           // Hover glow enhancement
           enableHover && variant === 'glow' && 'hover:shadow-[0_0_30px_rgba(6,182,212,0.25)]',
           enableHover && variant === 'bordered' && 'hover:border-cyan-500/50',
           enableHover && variant === 'default' && 'hover:border-cyan-500/20',
-          
+
           // Custom className
           className
         )}
@@ -226,7 +231,7 @@ const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
       >
         {/* Inner glow effect for enhanced depth */}
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 pointer-events-none rounded-xl" />
-        
+
         {/* Content */}
         <div className="relative z-10">
           {children}

@@ -18,7 +18,7 @@ import {
   WriteBatch,
 } from 'firebase/firestore';
 import { db } from './config';
-import type { PortfolioContent, ContactSubmission, Experience, Project, SkillCategory, Skill } from '@/types/portfolio';
+import type { PortfolioContent, ContactSubmission, Experience, Project, SkillCategory, Skill, Certification, Achievement } from '@/types/portfolio';
 
 // ==================== Generic CRUD Functions ====================
 
@@ -35,11 +35,11 @@ export const getDocument = async <T = DocumentData>(
   try {
     const docRef = doc(db, collectionName, docId);
     const docSnap = await getDoc(docRef);
-    
+
     if (docSnap.exists()) {
       return { id: docSnap.id, ...docSnap.data() } as T;
     }
-    
+
     console.log(`Document ${docId} not found in ${collectionName}`);
     return null;
   } catch (error) {
@@ -65,7 +65,7 @@ export const getDocuments = async <T = DocumentData>(
     const collectionRef = collection(db, collectionName);
     const q = constraints.length > 0 ? query(collectionRef, ...constraints) : collectionRef;
     const querySnapshot = await getDocs(q);
-    
+
     return querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -118,7 +118,7 @@ export const setDocument = async <T = DocumentData>(
       ...data,
       updatedAt: serverTimestamp(),
     };
-    
+
     await setDoc(docRef, docData, { merge: true });
     console.log(`Document ${docId} set successfully in ${collectionName}`);
   } catch (error) {
@@ -148,7 +148,7 @@ export const updateDocument = async <T = DocumentData>(
       ...data,
       updatedAt: serverTimestamp(),
     };
-    
+
     await firestoreUpdateDoc(docRef, updateData);
     console.log(`Document ${docId} updated successfully in ${collectionName}`);
   } catch (error) {
@@ -194,12 +194,12 @@ export const getAllDocuments = async <T = DocumentData>(
   try {
     const collectionRef = collection(db, collectionName);
     const querySnapshot = await getDocs(collectionRef);
-    
+
     const documents = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as T[];
-    
+
     console.log(`Retrieved ${documents.length} documents from ${collectionName}`);
     return documents;
   } catch (error) {
@@ -220,12 +220,42 @@ export const getAllDocuments = async <T = DocumentData>(
 export const getPortfolioContent = async (): Promise<PortfolioContent | null> => {
   try {
     const content = await getDocument<PortfolioContent>('portfolio_content', 'main');
-    
+
     if (!content) {
       console.log('Portfolio content not found, returning null');
       return null;
     }
-    
+
+    // Fetch data from external collections that are managed separately
+    try {
+      const [skillCategories, projects, experiences, certifications, achievements] = await Promise.all([
+        getAllDocuments<SkillCategory>('skill_categories').catch(() => []),
+        getAllDocuments<Project>('projects').catch(() => []),
+        getAllDocuments<Experience>('experiences').catch(() => []),
+        getAllDocuments<Certification>('certifications').catch(() => []),
+        getAllDocuments<Achievement>('achievements').catch(() => [])
+      ]);
+
+      if (skillCategories && skillCategories.length > 0) {
+        content.skillCategories = skillCategories;
+      }
+      if (projects && projects.length > 0) {
+        content.projects = projects;
+      }
+      if (experiences && experiences.length > 0) {
+        content.experiences = experiences;
+      }
+      if (certifications && certifications.length > 0) {
+        content.certifications = certifications;
+      }
+      if (achievements && achievements.length > 0) {
+        content.achievements = achievements;
+      }
+    } catch (colError) {
+      console.error('Error fetching separate collections for portfolio:', colError);
+      // We do not throw here to still return the hero/about data if collections fail
+    }
+
     return content;
   } catch (error) {
     console.error('Error getting portfolio content:', error);
@@ -242,7 +272,7 @@ export const getPortfolioContent = async (): Promise<PortfolioContent | null> =>
  * @param data - Section data to update
  * @returns Promise<void>
  */
-export const updatePortfolioSection = async <T = any>(
+export const updatePortfolioSection = async <T = unknown>(
   section: string,
   data: T
 ): Promise<void> => {
@@ -251,7 +281,7 @@ export const updatePortfolioSection = async <T = any>(
       [section]: data,
       [`metadata.lastUpdated`]: serverTimestamp(),
     };
-    
+
     await updateDocument('portfolio_content', 'main', updateData);
     console.log(`Portfolio section '${section}' updated successfully`);
   } catch (error) {
@@ -278,10 +308,10 @@ export const submitContactForm = async (
       replied: false,
       createdAt: serverTimestamp() as Timestamp,
     };
-    
+
     const collectionRef = collection(db, 'contact_submissions');
     const docRef = await addDoc(collectionRef, submissionData);
-    
+
     console.log(`Contact form submitted successfully with ID: ${docRef.id}`);
     return docRef.id;
   } catch (error) {
@@ -302,12 +332,12 @@ export const getContactSubmissions = async (): Promise<ContactSubmission[]> => {
     const collectionRef = collection(db, 'contact_submissions');
     const q = query(collectionRef, orderBy('createdAt', 'desc'));
     const querySnapshot = await getDocs(q);
-    
+
     const submissions = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     })) as ContactSubmission[];
-    
+
     console.log(`Retrieved ${submissions.length} contact submissions`);
     return submissions;
   } catch (error) {
@@ -334,7 +364,7 @@ export const addExperience = async (
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-    
+
     console.log('Experience added successfully:', docRef.id);
     return docRef.id;
   } catch (error) {
@@ -404,7 +434,7 @@ export const addProject = async (
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-    
+
     console.log('Project added successfully:', docRef.id);
     return docRef.id;
   } catch (error) {
@@ -475,7 +505,7 @@ export const addSkillCategory = async (
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-    
+
     console.log('Skill category added successfully:', docRef.id);
     return docRef.id;
   } catch (error) {

@@ -126,8 +126,8 @@ function SubmissionModal({ isOpen, onClose, submission, onDelete }: SubmissionMo
                     <Mail className="w-6 h-6 text-blue-400" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-white">Contact Submission</h2>
-                    <p className="text-sm text-gray-400 mt-1">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Contact Submission</h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                       {submission.createdAt?.seconds
                         ? formatDate(new Date(submission.createdAt.seconds * 1000))
                         : 'Date unknown'}
@@ -136,9 +136,9 @@ function SubmissionModal({ isOpen, onClose, submission, onDelete }: SubmissionMo
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-lg hover:bg-gray-800/50 transition-colors"
+                  className="p-2 rounded-lg hover:bg-gray-50 dark:bg-gray-800/50 transition-colors"
                 >
-                  <X className="w-5 h-5 text-gray-400" />
+                  <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 </button>
               </div>
 
@@ -147,14 +147,14 @@ function SubmissionModal({ isOpen, onClose, submission, onDelete }: SubmissionMo
                 {/* Name & Email */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+                    <label className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                       <User className="w-4 h-4" />
                       Name
                     </label>
-                    <p className="text-white font-medium">{submission.name}</p>
+                    <p className="text-gray-900 dark:text-white font-medium">{submission.name}</p>
                   </div>
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+                    <label className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                       <Mail className="w-4 h-4" />
                       Email
                     </label>
@@ -172,20 +172,20 @@ function SubmissionModal({ isOpen, onClose, submission, onDelete }: SubmissionMo
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {submission.phone && (
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+                        <label className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                           <Phone className="w-4 h-4" />
                           Phone
                         </label>
-                        <p className="text-white">{submission.phone}</p>
+                        <p className="text-gray-900 dark:text-white">{submission.phone}</p>
                       </div>
                     )}
                     {submission.company && (
                       <div>
-                        <label className="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+                        <label className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                           <Briefcase className="w-4 h-4" />
                           Company
                         </label>
-                        <p className="text-white">{submission.company}</p>
+                        <p className="text-gray-900 dark:text-white">{submission.company}</p>
                       </div>
                     )}
                   </div>
@@ -193,21 +193,21 @@ function SubmissionModal({ isOpen, onClose, submission, onDelete }: SubmissionMo
 
                 {/* Subject */}
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                     <FileText className="w-4 h-4" />
                     Subject
                   </label>
-                  <p className="text-white font-medium">{submission.subject}</p>
+                  <p className="text-gray-900 dark:text-white font-medium">{submission.subject}</p>
                 </div>
 
                 {/* Message */}
                 <div>
-                  <label className="flex items-center gap-2 text-sm font-medium text-gray-400 mb-2">
+                  <label className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                     <MessageSquare className="w-4 h-4" />
                     Message
                   </label>
-                  <div className="p-4 bg-gray-800/30 rounded-lg border border-gray-700/50">
-                    <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
+                  <div className="p-4 bg-gray-800/30 rounded-lg border border-gray-300 dark:border-gray-700/50">
+                    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
                       {submission.message}
                     </p>
                   </div>
@@ -298,7 +298,7 @@ export default function ContactSubmissionsPage() {
           'px-2 py-1 text-xs font-medium rounded-full',
           isNew
             ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-            : 'bg-gray-700/50 text-gray-400'
+            : 'bg-gray-700/50 text-gray-600 dark:text-gray-400'
         )}
       >
         {isNew ? 'New' : 'Read'}
@@ -321,18 +321,16 @@ export default function ContactSubmissionsPage() {
               <div className="flex items-center gap-3">
                 <Mail className="w-8 h-8 text-cyan-400" />
                 <div>
-                  <h1 className="text-4xl font-bold text-white mb-2">Contact Submissions</h1>
-                  <p className="text-gray-400">Review and manage messages from visitors</p>
+                  <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Contact Submissions</h1>
+                  <p className="text-gray-600 dark:text-gray-400">Review and manage messages from visitors</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Link href="/admin">
-                  <Button variant="outline" className="border-gray-700 flex items-center gap-2">
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to Dashboard
-                  </Button>
+                <Link href="/admin" className="btn-back-dashboard">
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to Dashboard
                 </Link>
-                <span className="px-4 py-2 rounded-lg bg-gray-800/50 text-sm font-medium text-gray-300">
+                <span className="px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-sm font-medium text-gray-700 dark:text-gray-300">
                   {submissions.length} {submissions.length === 1 ? 'submission' : 'submissions'}
                 </span>
               </div>
@@ -355,7 +353,7 @@ export default function ContactSubmissionsPage() {
                     <Mail className="w-12 h-12 text-gray-500" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-300 mb-2">No Submissions Yet</h3>
+                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No Submissions Yet</h3>
                     <p className="text-gray-500">
                       Contact form submissions will appear here when visitors reach out.
                     </p>
@@ -390,12 +388,12 @@ export default function ContactSubmissionsPage() {
                         <div className="flex items-start justify-between gap-4 mb-3">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-lg font-semibold text-white truncate">
+                              <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
                                 {submission.subject}
                               </h3>
                               {getStatusBadge(submission)}
                             </div>
-                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-400">
+                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
                               <span className="flex items-center gap-1">
                                 <User className="w-4 h-4" />
                                 {submission.name}
@@ -421,7 +419,7 @@ export default function ContactSubmissionsPage() {
                         </div>
 
                         {/* Message Preview */}
-                        <p className="text-gray-400 text-sm line-clamp-2 mb-4">
+                        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-4">
                           {submission.message}
                         </p>
 

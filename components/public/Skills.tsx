@@ -2,10 +2,10 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { 
-  Code2, 
-  Cloud, 
-  Database, 
+import {
+  Code2,
+  Cloud,
+  Database,
   Wrench,
   TrendingUp,
   Clock,
@@ -13,10 +13,10 @@ import {
   Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import GlassCard, { 
-  GlassCardContent, 
-  GlassCardHeader, 
-  GlassCardTitle 
+import GlassCard, {
+  GlassCardContent,
+  GlassCardHeader,
+  GlassCardTitle
 } from '@/components/effects/GlassCard';
 import { usePortfolioData } from '@/lib/hooks/useFirestore';
 import type { SkillCategory } from '@/types/portfolio';
@@ -115,8 +115,6 @@ const skillItemVariants = {
 
 const SkillItem: React.FC<SkillItemProps> = ({ skill, index, categoryColor }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const itemRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(itemRef, { once: true, amount: 0.3 });
 
   const { name, proficiency, yearsOfExperience, icon } = skill;
 
@@ -133,10 +131,10 @@ const SkillItem: React.FC<SkillItemProps> = ({ skill, index, categoryColor }) =>
 
   return (
     <motion.div
-      ref={itemRef}
       variants={skillItemVariants}
       initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
       transition={{ delay: index * 0.05 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -191,7 +189,8 @@ const SkillItem: React.FC<SkillItemProps> = ({ skill, index, categoryColor }) =>
             categoryConfig[categoryColor as keyof typeof categoryConfig]?.gradient || 'from-gray-500 to-gray-600'
           )}
           initial={{ width: 0 }}
-          animate={isInView ? { width: `${proficiency}%` } : { width: 0 }}
+          whileInView={{ width: `${proficiency}%` }}
+          viewport={{ once: true }}
           transition={{ duration: 1, delay: index * 0.05 }}
         />
 
@@ -202,12 +201,9 @@ const SkillItem: React.FC<SkillItemProps> = ({ skill, index, categoryColor }) =>
             'shadow-lg',
             `shadow-${categoryColor}-500/50`
           )}
-          initial={{ width: 0 }}
-          animate={
-            isInView
-              ? { width: `${proficiency}%`, opacity: isHovered ? 0.8 : 0 }
-              : { width: 0, opacity: 0 }
-          }
+          initial={{ width: 0, opacity: 0 }}
+          whileInView={{ width: `${proficiency}%`, opacity: isHovered ? 0.8 : 0 }}
+          viewport={{ once: true }}
           transition={{ duration: 1, delay: index * 0.05 }}
         />
       </div>
@@ -242,9 +238,6 @@ interface CategoryCardProps {
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category, index }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(cardRef, { once: true, amount: 0.2 });
-
   const config = categoryConfig[category.name as keyof typeof categoryConfig] || categoryConfig['Tools & Others'];
   const IconComponent = config.icon;
 
@@ -253,10 +246,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, index }) => {
 
   return (
     <motion.div
-      ref={cardRef}
       variants={cardVariants}
       initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.1 }}
       transition={{ delay: index * 0.1 }}
     >
       <GlassCard
@@ -292,7 +285,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category, index }) => {
                 config.textColor
               )}
               initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
               transition={{ delay: 0.5 }}
             >
               <Award className="w-3 h-3" />
@@ -384,12 +378,10 @@ const SkillsSkeleton: React.FC = () => {
 
 const Skills: React.FC<SkillsProps> = ({ className, mockData }) => {
   const { data, loading, error } = usePortfolioData();
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
   // Get skill categories from portfolio data or mock data
   const skillCategories: SkillCategory[] = mockData || data?.skillCategories || [];
-  
+
   // If using mock data, override loading and error states
   const isLoading = mockData ? false : loading;
   const hasError = mockData ? null : error;
@@ -398,11 +390,11 @@ const Skills: React.FC<SkillsProps> = ({ className, mockData }) => {
   const totalSkills = skillCategories.reduce((sum, cat) => sum + cat.skills.length, 0);
   const averageProficiency = skillCategories.length > 0
     ? Math.round(
-        skillCategories.reduce(
-          (sum, cat) => sum + cat.skills.reduce((s, skill) => s + skill.proficiency, 0),
-          0
-        ) / totalSkills
-      )
+      skillCategories.reduce(
+        (sum, cat) => sum + cat.skills.reduce((s, skill) => s + skill.proficiency, 0),
+        0
+      ) / totalSkills
+    )
     : 0;
   const expertSkills = skillCategories.reduce(
     (sum, cat) => sum + cat.skills.filter(s => s.proficiency >= 90).length,
@@ -459,14 +451,14 @@ const Skills: React.FC<SkillsProps> = ({ className, mockData }) => {
   return (
     <section
       id="skills"
-      ref={sectionRef}
       className={cn('relative py-16 md:py-24 lg:py-32 container mx-auto px-4', className)}
     >
       {/* Section Heading */}
       <motion.div
         className="text-center mb-12"
         initial={{ opacity: 0, y: -20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
         transition={{ duration: 0.6 }}
       >
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-3">
@@ -474,7 +466,8 @@ const Skills: React.FC<SkillsProps> = ({ className, mockData }) => {
           <motion.span
             className="block h-1 w-24 mx-auto mt-3 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full"
             initial={{ scaleX: 0 }}
-            animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           />
         </h2>
@@ -487,7 +480,8 @@ const Skills: React.FC<SkillsProps> = ({ className, mockData }) => {
       <motion.div
         className="flex flex-wrap justify-center gap-4 mb-12"
         initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
       >
         <GlassCard variant="bordered" className="px-6 py-4" enableHover>
@@ -525,7 +519,8 @@ const Skills: React.FC<SkillsProps> = ({ className, mockData }) => {
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        animate={isInView ? 'visible' : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
       >
         {skillCategories
@@ -539,7 +534,8 @@ const Skills: React.FC<SkillsProps> = ({ className, mockData }) => {
       <motion.div
         className="mt-12 text-center"
         initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.8 }}
       >
         <div className="inline-block glass-card px-6 py-3 font-mono text-xs text-gray-400">

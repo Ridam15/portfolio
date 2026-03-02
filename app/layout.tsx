@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 import './globals.css';
 
 /**
@@ -119,29 +121,37 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} font-sans antialiased bg-gray-950 text-white`}
+        className={`${inter.variable} font-sans antialiased transition-colors duration-300`}
         suppressHydrationWarning
       >
-        {/* Error Boundary for global error handling */}
-        <ErrorBoundary>
-          {children}
-        </ErrorBoundary>
-        
-        {/* Toast notifications with futuristic glassmorphic styling */}
-        <Toaster 
-          theme="dark"
-          position="top-right"
-          richColors={true}
-          toastOptions={{
-            className: 'bg-gray-900/90 backdrop-blur-lg border border-cyan-500/20',
-            style: {
-              background: 'rgba(17, 24, 39, 0.9)',
-              backdropFilter: 'blur(16px)',
-              border: '1px solid rgba(6, 182, 212, 0.2)',
-              color: 'white',
-            },
-          }}
-        />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          storageKey="portfolio-theme"
+          disableTransitionOnChange={false}
+        >
+          {/* Error Boundary for global error handling */}
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+
+          {/* Toast notifications with glassmorphic styling */}
+          <Toaster
+            position="top-right"
+            richColors={true}
+            toastOptions={{
+              className: 'bg-gray-900/90 backdrop-blur-lg border border-cyan-500/20',
+              style: {
+                background: 'rgba(17, 24, 39, 0.9)',
+                backdropFilter: 'blur(16px)',
+                border: '1px solid rgba(6, 182, 212, 0.2)',
+                color: 'white',
+              },
+            }}
+          />
+          <GoogleAnalytics />
+        </ThemeProvider>
       </body>
     </html>
   );

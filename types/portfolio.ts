@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from "firebase/firestore";
 
 // ==================== Hero Section ====================
 export interface SocialLink {
@@ -10,7 +10,7 @@ export interface SocialLink {
 export interface CTAButton {
   text: string;
   url: string;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: "primary" | "secondary" | "outline";
   icon?: string;
 }
 
@@ -65,7 +65,7 @@ export interface Experience {
   companyUrl?: string;
   companyLogo?: string;
   location: string;
-  locationType?: 'remote' | 'hybrid' | 'onsite';
+  locationType?: "remote" | "hybrid" | "onsite";
   startDate: string; // ISO date string or Firebase Timestamp
   endDate?: string; // ISO date string or Firebase Timestamp (undefined if current)
   current: boolean;
@@ -79,7 +79,7 @@ export interface Experience {
 
 // ==================== Projects Section ====================
 export interface ProjectMedia {
-  type: 'image' | 'video';
+  type: "image" | "video";
   url: string;
   thumbnail?: string;
   alt?: string;
@@ -107,7 +107,7 @@ export interface Project {
   featured: boolean;
   order: number;
   category?: string;
-  status?: 'completed' | 'in-progress' | 'planned';
+  status?: "completed" | "in-progress" | "planned";
   startDate?: string;
   endDate?: string;
   teamSize?: number;
@@ -141,9 +141,9 @@ export interface Certification {
   id: string;
   title: string;
   issuer: string;
-  issuerLogo?: string;
+  badgeUrl?: string; // Image URL for certification badge
   issueDate: string; // ISO date string when issued
-  expirationDate?: string; // ISO date string when expires
+  expiryDate?: string; // ISO date string when expires
   credentialUrl?: string; // Verification link
   credentialId?: string;
   description?: string;
@@ -174,7 +174,7 @@ export interface ContactInfo {
   phone?: string;
   location?: string;
   availability?: string;
-  preferredContact?: 'email' | 'phone' | 'any';
+  preferredContact?: "email" | "phone" | "any";
   socialLinks?: SocialLink[];
 }
 
@@ -235,7 +235,7 @@ export interface FirestoreDocument {
   updatedAt?: Timestamp;
 }
 
-export type SortOrder = 'asc' | 'desc';
+export type SortOrder = "asc" | "desc";
 
 export interface SortConfig {
   field: string;
@@ -265,7 +265,7 @@ export interface LoginFormData {
 }
 
 // ==================== API Response Types ====================
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -279,4 +279,3 @@ export interface PaginatedResponse<T> {
   limit: number;
   hasMore: boolean;
 }
-
